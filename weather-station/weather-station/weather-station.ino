@@ -70,8 +70,8 @@ void configModeCallback (WiFiManager *myWiFiManager) {
 void setup() {
   Serial.begin(115200);
 
-  Wire.begin(0, 2);
-  
+  Wire.begin(12, 2);
+
   //WiFiManager
   //Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wifiManager;
