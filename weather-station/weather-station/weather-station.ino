@@ -1,11 +1,17 @@
+// wi-fi
 #include <ESP8266WiFi.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include "WiFiManager.h"
 #include <WiFiUdp.h>
 
+// i2c
 #include <Wire.h>
 #include "RTClib.h"
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BMP085_U.h>
+
+Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
 
 // UDP - получение точного времени
 RTC_DS1307 rtc;
@@ -67,10 +73,35 @@ void configModeCallback (WiFiManager *myWiFiManager) {
   Serial.println(myWiFiManager->getConfigPortalSSID());
 }
 
+void printTemperature() {
+  sensors_event_t event;
+  bmp.getEvent(&event);
+
+  /* Display the results (barometric pressure is measure in hPa) */
+  if (event.pressure) {
+    float temperature;
+    bmp.getTemperature(&temperature);
+
+    Serial.print("Temperature: ");
+    Serial.print(temperature);
+    Serial.println(" C");
+  } else {
+    Serial.println("Sensor error");
+  }
+}
+
 void setup() {
   Serial.begin(115200);
 
   Wire.begin(12, 2);
+
+  if (!bmp.begin()) {
+    /* There was a problem detecting the BMP085 ... check your connections */
+    Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");
+    while(1);
+  } else {
+    Serial.println("BMP sensor found");
+  }
 
   //WiFiManager
   //Local intialization. Once its business is done, there is no need to keep it around
@@ -132,6 +163,8 @@ void setup() {
     Serial.print(now.second(), DEC);
     Serial.println();
   }
+
+  printTemperature();
 }
 
 void loop() {
