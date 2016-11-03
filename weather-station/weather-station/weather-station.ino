@@ -11,6 +11,9 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 
+// Display
+#include "display.h"
+
 Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
 
 // UDP - получение точного времени
@@ -23,6 +26,8 @@ WiFiUDP Udp;
 const unsigned int localPort = 8888;  // local port to listen for UDP packets
 const int NTP_PACKET_SIZE = 48;       // NTP time is in the first 48 bytes of message
 byte packetBuffer[NTP_PACKET_SIZE];
+
+Display display;
 
 void sendNTPpacket(IPAddress &address) {
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
@@ -93,6 +98,9 @@ void printTemperature() {
 void setup() {
   Serial.begin(115200);
 
+  display = Display();
+  display.showCurrentWeather();
+  while(1);
   Wire.begin(12, 2);
 
   if (!bmp.begin()) {
