@@ -29,7 +29,7 @@ String Clock::getTime() {
   result += (d % 2 == 0) ? ":" : " ";
   d = dt.minute();
   result += (d < 10 ? "0" : "") + String(d);
-  Serial.println(result);
+
   return result;
 }
 
@@ -38,7 +38,7 @@ String Clock::getDate() {
 
   static String days[] = {
     //"Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Вс."
-    "Mo.", "Th.", "We.", "Th.", "Fr.", "Sa.", "Su."
+    "Mo, ", "Th, ", "We, ", "Th, ", "Fr, ", "Sa, ", "Su, "
   };
   // янв., февр., апр., авг., сент., окт., нояб., дек. Такие названия месяцев, как март, май, июнь, июль, сокращений не имеют.
   static String months[] = {
@@ -49,6 +49,5 @@ String Clock::getDate() {
   };
 
   String result = days[dt.dayOfTheWeek()] + String(dt.day()) + months[dt.month() - 1] + String(dt.year());
-  Serial.println(result);
   return result;
 }

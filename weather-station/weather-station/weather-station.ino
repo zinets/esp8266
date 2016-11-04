@@ -21,14 +21,15 @@ void setup() {
   // display.showStartupScreen();
 
   clock = Clock();
-  display.setTime(clock.getTime());
-  display.setDate(clock.getDate());
-  display.showTimeScreen();
+
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  display.setTime(clock.getTime());
+  display.setDate(clock.getDate());
+  display.showTimeScreen();
 
+  delay(1000);
 }
 //
 // #undef OLD_CODE

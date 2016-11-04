@@ -25,16 +25,16 @@ void Display::showStartupScreen() {
 
 void Display::showTimeScreen() {
   u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_inb16_mf);
+  u8g2.setFont(u8g2_font_inb21_mf);
 
   const char *str = currentTime.c_str();
   int w = u8g2.getStrWidth(str);
-  u8g2.drawStr((128 - w) / 2, 20 , str);
+  u8g2.drawStr((128 - w) / 2, 25, str);
 
   u8g2.setFont(u8g2_font_7x14_mf);
   str = currentDate.c_str();
   w = u8g2.getStrWidth(str);
-  u8g2.drawStr((128 - w) / 2, 50 , str);
+  u8g2.drawStr((128 - w) / 2, 50, str);
 
   u8g2.sendBuffer();
 }
