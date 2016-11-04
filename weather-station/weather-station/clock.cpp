@@ -14,7 +14,7 @@ Clock::Clock(/*int utcOffset*/) {
 
     adjustDateTime(1478287596);
   }
-  adjustDateTime(1483228780);
+  // adjustDateTime(1483228780);
   // 1475280000; // 01 Okt
   // 1480464000 // 30 Nov
   // 1481328000 // 10 Dec
