@@ -14,7 +14,14 @@ Clock::Clock(/*int utcOffset*/) {
 
     adjustDateTime(1478287596);
   }
-  // adjustDateTime(1483228790);
+  adjustDateTime(1483228780);
+  // 1475280000; // 01 Okt
+  // 1480464000 // 30 Nov
+  // 1481328000 // 10 Dec
+  // 1483160400 // 31 Dec 5 am
+  // 1483228680 // 2 minutes to NY
+  // 1483228780 // 20 sec to NY
+
 }
 
 void Clock::adjustDateTime(time_t dateTime) {
@@ -54,6 +61,19 @@ String Clock::getDate() {
 }
 
 bool Clock::canShowNYRemainTime() {
+  String t = getNYRemainingTime();
+  Serial.println(t);
+  Serial.println(t.length());
+  bool res = t.length() > 0;
+  if (res) {
+    Serial.println("TRUE");
+  } else {
+    Serial.println("FALSE");
+  }
+  return res;
+}
+
+String Clock::getNYRemainingTime() {
   DateTime dt = rtc.now();
   int nextYear = dt.year() + 1;
 
@@ -61,6 +81,21 @@ bool Clock::canShowNYRemainTime() {
   TimeSpan d = newYearDay - dt;
   Serial.print ("remain ");
   Serial.println(d.days());
+  Serial.println(d.hours());
+  Serial.println(d.minutes());
 
-  return d.days() < 60;
+  if (d.days() > 60) {
+    return "";
+  }
+
+  if (d.days() > 1) {
+    return String(d.days()) + " days";
+  }
+  if (d.hours() > 1) {
+    return String(d.hours()) + " hours";
+  }
+  if (d.minutes() >= 1) {
+    return String(d.minutes()) + " minutes";
+  }
+  return "Less then one minute";
 }

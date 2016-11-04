@@ -11,4 +11,5 @@ public:
   String getTime();
   String getDate();
   bool canShowNYRemainTime();
+  String getNYRemainingTime();
 };

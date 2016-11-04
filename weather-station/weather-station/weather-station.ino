@@ -27,9 +27,9 @@ enum ScreenType {
 
 int const numberOfScreens = 3;
 Screen screens[numberOfScreens] = {
-  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 6, .enabled = true},
+  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 2, .enabled = true},
   /* ScreenTypeNYRemain */    {.displayFunc = showNYRemainTime, .timeout = 6, .enabled = true},
-  /* ScreenTypeAnother */     {.displayFunc = showAnotherScreen, .timeout = 4, .enabled = true},
+  /* ScreenTypeAnother */     {.displayFunc = showAnotherScreen, .timeout = 1, .enabled = true},
 };
 int currentScreenIndex = 0;
 
@@ -44,16 +44,14 @@ void setup() {
 
   display = Display();
   clock = Clock();
-  Screen nyRemainScreen = screens[ScreenTypeNYRemain];
-  nyRemainScreen.enabled = clock.canShowNYRemainTime();
+
+  screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
 }
 
 
 
 void showTimeScreen() {
-  display.setTime(clock.getTime());
-  display.setDate(clock.getDate());
-  display.showTimeScreen();
+  display.showTimeScreen(clock.getTime(), clock.getDate());
 }
 
 void showAnotherScreen() {
@@ -61,14 +59,26 @@ void showAnotherScreen() {
 }
 
 void showNYRemainTime() {
-  display.showNYRemainTime();
+  display.showNYRemainTime(clock.getNYRemainingTime());
 }
 
 void loop() {
-  Screen scr = screens[currentScreenIndex];
-  for (int x = 0; x < scr.timeout; x++) {
-    scr.displayFunc();
-    delay(1000);
+  switch (currentScreenIndex) {
+    case ScreenTypeNYRemain:
+      screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
+      break;
+    default:
+      break;
+  }
+
+  if (screens[currentScreenIndex].enabled) {
+    for (int x = 0; x < screens[currentScreenIndex].timeout; x++) {
+      screens[currentScreenIndex].displayFunc();
+      delay(1000);
+      if (!screens[currentScreenIndex].enabled) {
+        break;
+      }
+    }
   }
   currentScreenIndex = (++currentScreenIndex) % numberOfScreens;
 }

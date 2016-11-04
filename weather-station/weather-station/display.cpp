@@ -23,7 +23,7 @@ void Display::showStartupScreen() {
   u8g2.sendBuffer();
 }
 
-void Display::showTimeScreen() {
+void Display::showTimeScreen(String currentTime, String currentDate) {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_inb21_mf);
 
@@ -45,9 +45,9 @@ void Display::showCurrentWeather() {
   u8g2.sendBuffer();
 }
 
-void Display::showNYRemainTime() {
+void Display::showNYRemainTime(String remainingTime) {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_ncenB14_tr);
-  u8g2.drawStr(5, 25, "Remain 58 days");
+  u8g2.drawStr(5, 25, remainingTime.c_str());
   u8g2.sendBuffer();
 }
