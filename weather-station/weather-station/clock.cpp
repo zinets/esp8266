@@ -14,8 +14,7 @@ Clock::Clock(/*int utcOffset*/) {
 
     adjustDateTime(1478287596);
   }
-
-  adjustDateTime(1483228790);
+  // adjustDateTime(1483228790);
 }
 
 void Clock::adjustDateTime(time_t dateTime) {

@@ -9,6 +9,21 @@
 Display display;
 Clock clock;
 
+void showTimeScreen();
+void showAnotherScreen();
+
+typedef struct Screen {
+  void (*displayFunc)();
+  int timeout;
+} Screen;
+int const numberOfScreens = 2;
+Screen screens[numberOfScreens] = {
+  {.displayFunc = showTimeScreen, .timeout = 5},
+  {.displayFunc = showAnotherScreen, .timeout = 3},
+};
+int currentScreenIndex = 0;
+
+
 #define DEBUG
 #define SDA_PIN 12
 #define SCL_PIN 2
@@ -18,18 +33,29 @@ void setup() {
   Wire.begin(SDA_PIN, SCL_PIN);
 
   display = Display();
-  // display.showStartupScreen();
-
   clock = Clock();
 
 }
 
-void loop() {
+
+
+void showTimeScreen() {
   display.setTime(clock.getTime());
   display.setDate(clock.getDate());
   display.showTimeScreen();
+}
 
-  delay(1000);
+void showAnotherScreen() {
+  display.showStartupScreen();
+}
+
+void loop() {
+  Screen scr = screens[currentScreenIndex];
+  for (int x = 0; x < scr.timeout; x++) {
+    scr.displayFunc();
+    delay(1000);
+  }
+  currentScreenIndex = (++currentScreenIndex) % numberOfScreens;
 }
 //
 // #undef OLD_CODE
