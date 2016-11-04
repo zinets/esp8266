@@ -14,11 +14,11 @@ Display::Display() {
 
   u8g2.begin();
   u8g2.clearBuffer();
-
-  setTime(1478258772);
 }
 
+/*
 void Display::setTime(time_t dt) {
+  #warning а вообще это все глупость; время берется у rtc у которого есть класс для даты; так что вот пусть он сформирует дату и просто передаст ее в сюда
   long t = (dt + 3600 * LOCAL_UTC_OFFSET + 86400) % 86400;
   int hours = ((t  % 86400L) / 3600) % 24;
   int minutes = ((t % 3600) / 60);
@@ -31,12 +31,20 @@ void Display::setTime(time_t dt) {
   // минуты
   currentTime += (minutes < 10 ? "0" : "") + String (minutes);
 }
+*/
 
 void Display::showTime() {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_ncenB14_tr);
-  int w = u8g2.getStrWidth(currentTime.c_str());
-  u8g2.drawStr((128 - w) / 2, 20 , currentTime.c_str());
+
+  const char *str = currentTime.c_str();
+  int w = u8g2.getStrWidth(str);
+  u8g2.drawStr((128 - w) / 2, 20 , str);
+
+  str = currentDate.c_str();
+  w = u8g2.getStrWidth(str);
+  u8g2.drawStr((128 - w) / 2, 40 , str);
+
   u8g2.sendBuffer();
 }
 

@@ -31,18 +31,22 @@ typedef struct WeatherState {
 class Display {
 private:
   U8G2 u8g2;
-  String currentTime;
+  String currentTime, currentDate;
   WeatherState currentWeatherState;
   WeatherState currentIndoorState;
   // WeatherState forecast[3];
 public:
   Display();
 
-  void setTime(time_t dt);
+  void setTime(String newTime) { currentTime = newTime; };
+  void setDate(String newDate) { currentDate = newDate; };
   void setWeather(WeatherState newState) {currentWeatherState = newState;};
   void setIndoorState(WeatherState newState) {currentIndoorState = newState;};
 
+  // screens
   void showTime();
   void showCurrentWeather();
   void showIndorState();
+  // forecast
+  // NY remaining
 };
