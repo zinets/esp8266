@@ -21,11 +21,27 @@ void Clock::adjustDateTime(time_t dateTime) {
 String Clock::getTime() {
   DateTime dt = rtc.now();
   uint8_t d = dt.hour();
-  String time = (d < 10 ? "0" : "") + String (d);
+  String result = (d < 10 ? "0" : "") + String (d);
   d = dt.second();
-  time += (d % 2 == 0) ? ":" : " ";
+  result += (d % 2 == 0) ? ":" : " ";
   d = dt.minute();
-  time += (d < 10 ? "0" : "") + String(d);
+  result += (d < 10 ? "0" : "") + String(d);
 
-  return time;
+  return result;
+}
+
+String Clock::getDate() {
+  DateTime dt = rtc.now();
+
+  static String days[] = {
+    "Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Вс."
+  };
+  // янв., февр., апр., авг., сент., окт., нояб., дек. Такие названия месяцев, как март, май, июнь, июль, сокращений не имеют.
+  static String months[] = {
+    " янв. ", " февр. ", " март ", " апр. ", " май ", " июнь ",
+    " июль ", " авг. ", " сент. ", " окт. ", " нояб. ", " дек. "
+  };
+
+  String result = days[dt.dayOfTheWeek()] + String(dt.day()) + months[dt.month()] + String(dt.year());
+  return result;
 }
