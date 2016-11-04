@@ -44,3 +44,10 @@ void Display::showCurrentWeather() {
   u8g2.drawXBMP(0, 0, 50, 50, wind_bits);
   u8g2.sendBuffer();
 }
+
+void Display::showNYRemainTime() {
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_ncenB14_tr);
+  u8g2.drawStr(5, 25, "Remain 58 days");
+  u8g2.sendBuffer();
+}

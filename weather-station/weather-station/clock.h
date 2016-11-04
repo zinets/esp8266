@@ -7,7 +7,8 @@ private:
 public:
   Clock(); //(int utcOffset);
   void adjustDateTime(time_t dateTime);
-
+// getters
   String getTime();
   String getDate();
+  bool canShowNYRemainTime();
 };

@@ -11,15 +11,25 @@ Clock clock;
 
 void showTimeScreen();
 void showAnotherScreen();
+void showNYRemainTime();
 
 typedef struct Screen {
   void (*displayFunc)();
   int timeout;
+  bool enabled;
 } Screen;
-int const numberOfScreens = 2;
+
+enum ScreenType {
+  ScreenTypeTime,
+  ScreenTypeNYRemain,
+  ScreenTypeAnother,
+};
+
+int const numberOfScreens = 3;
 Screen screens[numberOfScreens] = {
-  {.displayFunc = showTimeScreen, .timeout = 5},
-  {.displayFunc = showAnotherScreen, .timeout = 3},
+  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 6, .enabled = true},
+  /* ScreenTypeNYRemain */    {.displayFunc = showNYRemainTime, .timeout = 6, .enabled = true},
+  /* ScreenTypeAnother */     {.displayFunc = showAnotherScreen, .timeout = 4, .enabled = true},
 };
 int currentScreenIndex = 0;
 
@@ -34,7 +44,8 @@ void setup() {
 
   display = Display();
   clock = Clock();
-
+  Screen nyRemainScreen = screens[ScreenTypeNYRemain];
+  nyRemainScreen.enabled = clock.canShowNYRemainTime();
 }
 
 
@@ -47,6 +58,10 @@ void showTimeScreen() {
 
 void showAnotherScreen() {
   display.showStartupScreen();
+}
+
+void showNYRemainTime() {
+  display.showNYRemainTime();
 }
 
 void loop() {

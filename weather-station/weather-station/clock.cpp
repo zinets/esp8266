@@ -52,3 +52,15 @@ String Clock::getDate() {
   String result = days[dt.dayOfTheWeek()] + String(dt.day()) + months[dt.month() - 1] + String(dt.year());
   return result;
 }
+
+bool Clock::canShowNYRemainTime() {
+  DateTime dt = rtc.now();
+  int nextYear = dt.year() + 1;
+
+  DateTime newYearDay = DateTime(nextYear, 1, 1, 0, 0, 0);
+  TimeSpan d = newYearDay - dt;
+  Serial.print ("remain ");
+  Serial.println(d.days());
+
+  return d.days() < 60;
+}

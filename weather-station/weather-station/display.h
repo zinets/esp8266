@@ -48,6 +48,7 @@ public:
   void showTimeScreen();
   void showCurrentWeather();
   void showIndorState();
+  void showNYRemainTime();
   // forecast
   // NY remaining
 };
