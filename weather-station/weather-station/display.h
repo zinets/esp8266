@@ -44,7 +44,8 @@ public:
   void setIndoorState(WeatherState newState) {currentIndoorState = newState;};
 
   // screens
-  void showTime();
+  void showStartupScreen();
+  void showTimeScreen();
   void showCurrentWeather();
   void showIndorState();
   // forecast

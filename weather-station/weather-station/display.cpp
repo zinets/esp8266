@@ -16,24 +16,13 @@ Display::Display() {
   u8g2.clearBuffer();
 }
 
-/*
-void Display::setTime(time_t dt) {
-  #warning а вообще это все глупость; время берется у rtc у которого есть класс для даты; так что вот пусть он сформирует дату и просто передаст ее в сюда
-  long t = (dt + 3600 * LOCAL_UTC_OFFSET + 86400) % 86400;
-  int hours = ((t  % 86400L) / 3600) % 24;
-  int minutes = ((t % 3600) / 60);
-  int seconds = t % 60;
+void Display::showStartupScreen() {
+  u8g2.clearBuffer();
 
-  // время с ведущим нулем
-  currentTime = (hours < 10 ? "0" : "") + String (hours);
-  // пульсирующий разделитель
-  currentTime += (seconds % 2 == 0) ? ":" : " ";
-  // минуты
-  currentTime += (minutes < 10 ? "0" : "") + String (minutes);
+  u8g2.sendBuffer();
 }
-*/
 
-void Display::showTime() {
+void Display::showTimeScreen() {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_ncenB14_tr);
 
