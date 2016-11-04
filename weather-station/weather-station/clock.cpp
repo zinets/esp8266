@@ -1,7 +1,7 @@
 #include "clock.h"
 
-Clock::Clock(int utcOffset) {
-  localUtcOffset = utcOffset;
+Clock::Clock(/*int utcOffset*/) {
+  localUtcOffset = 2; //utcOffset;
 
   rtc = RTC_DS1307();
   if (!rtc.begin()) {
@@ -10,7 +10,9 @@ Clock::Clock(int utcOffset) {
     while (1);
   }
   if (!rtc.isrunning()) {
-    rtc.adjust(0);
+    Serial.println("Reset rtc");
+
+    adjustDateTime(1478287596);
   }
 }
 
@@ -23,10 +25,11 @@ String Clock::getTime() {
   uint8_t d = dt.hour();
   String result = (d < 10 ? "0" : "") + String (d);
   d = dt.second();
+
   result += (d % 2 == 0) ? ":" : " ";
   d = dt.minute();
   result += (d < 10 ? "0" : "") + String(d);
-
+  Serial.println(result);
   return result;
 }
 
@@ -34,14 +37,18 @@ String Clock::getDate() {
   DateTime dt = rtc.now();
 
   static String days[] = {
-    "Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Вс."
+    //"Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Вс."
+    "Mo.", "Th.", "We.", "Th.", "Fr.", "Sa.", "Su."
   };
   // янв., февр., апр., авг., сент., окт., нояб., дек. Такие названия месяцев, как март, май, июнь, июль, сокращений не имеют.
   static String months[] = {
-    " янв. ", " февр. ", " март ", " апр. ", " май ", " июнь ",
-    " июль ", " авг. ", " сент. ", " окт. ", " нояб. ", " дек. "
+    // " янв. ", " февр. ", " март ", " апр. ", " май ", " июнь ",
+    // " июль ", " авг. ", " сент. ", " окт. ", " нояб. ", " дек. "
+    " Jan ", " Feb ", " Mar ", " Apr ", " May ", " Jun ",
+    " Jul ", " Aug ", " Sep ", " Okt ", " Nov ", " Dec "
   };
 
-  String result = days[dt.dayOfTheWeek()] + String(dt.day()) + months[dt.month()] + String(dt.year());
+  String result = days[dt.dayOfTheWeek()] + String(dt.day()) + months[dt.month() - 1] + String(dt.year());
+  Serial.println(result);
   return result;
 }

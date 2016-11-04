@@ -18,21 +18,23 @@ Display::Display() {
 
 void Display::showStartupScreen() {
   u8g2.clearBuffer();
-
+  u8g2.setFont(u8g2_font_ncenB14_tr);
+  u8g2.drawStr(5, 25, "Starting...");
   u8g2.sendBuffer();
 }
 
 void Display::showTimeScreen() {
   u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_ncenB14_tr);
+  u8g2.setFont(u8g2_font_inb16_mf);
 
   const char *str = currentTime.c_str();
   int w = u8g2.getStrWidth(str);
   u8g2.drawStr((128 - w) / 2, 20 , str);
 
+  u8g2.setFont(u8g2_font_7x14_mf);
   str = currentDate.c_str();
   w = u8g2.getStrWidth(str);
-  u8g2.drawStr((128 - w) / 2, 40 , str);
+  u8g2.drawStr((128 - w) / 2, 50 , str);
 
   u8g2.sendBuffer();
 }

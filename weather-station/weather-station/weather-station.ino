@@ -4,18 +4,26 @@
 
 // Display
 #include "display.h"
+#include "clock.h"
 
 Display display;
+Clock clock;
 
 #define DEBUG
+#define SDA_PIN 12
+#define SCL_PIN 2
 
 void setup() {
   Serial.begin(115200);
+  Wire.begin(SDA_PIN, SCL_PIN);
 
   display = Display();
-  display.showStartupScreen();
+  // display.showStartupScreen();
 
-  
+  clock = Clock();
+  display.setTime(clock.getTime());
+  display.setDate(clock.getDate());
+  display.showTimeScreen();
 }
 
 void loop() {
