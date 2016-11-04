@@ -14,6 +14,8 @@ Clock::Clock(/*int utcOffset*/) {
 
     adjustDateTime(1478287596);
   }
+
+  adjustDateTime(1483228790);
 }
 
 void Clock::adjustDateTime(time_t dateTime) {
@@ -38,7 +40,7 @@ String Clock::getDate() {
 
   static String days[] = {
     //"Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Вс."
-    "Mo, ", "Th, ", "We, ", "Th, ", "Fr, ", "Sa, ", "Su, "
+    "Su, ", "Mo, ", "Th, ", "We, ", "Th, ", "Fr, ", "Sa, ",
   };
   // янв., февр., апр., авг., сент., окт., нояб., дек. Такие названия месяцев, как март, май, июнь, июль, сокращений не имеют.
   static String months[] = {
