@@ -46,6 +46,7 @@ public:
   void showTimeScreen(String currentTime, String currentDate);
   void showNYRemainTime(String remainingTime);
   void showIndoorData(String currentTemperature, String currentPressure);
+  void showConfigData(String apName);
 
   void showCurrentWeather();
   void showIndorState();

@@ -1,11 +1,17 @@
 #include <Arduino.h>
 // i2c
 #include <Wire.h>
+// WiFi
+#include <ESP8266WiFi.h>
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
+#include <WiFiManager.h>
 
 // Display
 #include "display.h"
 #include "clock.h"
 #include "barometer.h"
+
 
 Display display;
 Clock clock;
@@ -14,6 +20,7 @@ Barometer barometer;
 void showTimeScreen();
 void showTemperatureScreen();
 void showNYRemainTime();
+void configModeCallback (WiFiManager *myWiFiManager);
 
 typedef struct Screen {
   void (*displayFunc)();
@@ -44,6 +51,9 @@ int currentScreenIndex = 0;
 
 typedef struct FLAGS {
 	unsigned char shouldUpdateBaro: 1;
+  unsigned char shouldConnectWiFi: 1;
+  unsigned char isWiFiconnected: 1;
+
   unsigned long nextUpdateBaroTime;
 } FLAGS;
 volatile FLAGS flags;
@@ -59,6 +69,7 @@ void setup() {
   screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
 
   flags.shouldUpdateBaro = true;
+  flags.shouldConnectWiFi = true;
 }
 
 void loop() {
@@ -67,6 +78,22 @@ void loop() {
 
     flags.nextUpdateBaroTime = millis() + UPDATE_BARO_PERIOD;
     flags.shouldUpdateBaro = false;
+  } else if (flags.shouldConnectWiFi) {
+    Serial.println("try to connect to wifi");
+    WiFiManager wifiManager;
+    // wifiManager.resetSettings();
+    wifiManager.setAPCallback(configModeCallback);
+
+    if (wifiManager.autoConnect()) {
+      flags.isWiFiconnected = true;
+    } else {
+      Serial.println("failed to connect and hit timeout");
+
+      ESP.reset();
+      // delay(1000);
+      flags.isWiFiconnected = false;
+    }
+    flags.shouldConnectWiFi = false;
   }
 
   switch (currentScreenIndex) {
@@ -108,6 +135,14 @@ void showNYRemainTime() {
 
 void showTemperatureScreen() {
   display.showIndoorData(barometer.getTemperature(), barometer.getPressure());
+}
+
+void configModeCallback (WiFiManager *myWiFiManager) {
+  Serial.println("Entered config mode");
+  Serial.println(WiFi.softAPIP());
+  String apName = myWiFiManager->getConfigPortalSSID();
+  Serial.println(apName);
+  display.showConfigData(apName);
 }
 
 //

@@ -62,3 +62,13 @@ void Display::showIndoorData(String currentTemperature, String currentPressure) 
 
   u8g2.sendBuffer();
 }
+
+void Display::showConfigData(String apName) {
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_courB10_tf);
+
+  u8g2.drawStr(50, 15, "AP name:");
+  u8g2.drawStr(50, 25, apName.c_str());
+
+  u8g2.sendBuffer();
+}
