@@ -5,11 +5,11 @@
 // Display
 #include "display.h"
 #include "clock.h"
-#include "temperature.h"
+#include "barometer.h"
 
 Display display;
 Clock clock;
-Temperature temperature;
+Barometer barometer;
 
 void showTimeScreen();
 void showTemperatureScreen();
@@ -39,45 +39,36 @@ int currentScreenIndex = 0;
 #define SDA_PIN 12
 #define SCL_PIN 2
 
+typedef struct FLAGS {
+	unsigned char shouldUpdateBaro: 1;
+} FLAGS;
+volatile FLAGS flags;
+
 void setup() {
   Serial.begin(115200);
   Wire.begin(SDA_PIN, SCL_PIN);
 
   display = Display();
   clock = Clock();
-  temperature = Temperature();
+  barometer = Barometer();
 
   screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
-}
 
-void showTimeScreen() {
-  display.showTimeScreen(clock.getTime(), clock.getDate());
-}
-
-void showAnotherScreen() {
-  display.showStartupScreen();
-}
-
-void showNYRemainTime() {
-  display.showNYRemainTime(clock.getNYRemainingTime());
-}
-
-void showTemperatureScreen() {
-  display.showIndoorData(temperature.getTemperature(), temperature.getPressure());
+  flags.shouldUpdateBaro = true;
 }
 
 void loop() {
-  static bool measured = false;
-  if (!measured) {
-    temperature.adjustData();
-    measured = true;
+  if (flags.shouldUpdateBaro) {
+    barometer.adjustData();
+    flags.shouldUpdateBaro = false;
   }
+
   switch (currentScreenIndex) {
     case ScreenTypeNYRemain:
       screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
       break;
     case ScreenTypeIndoorData:
-      screens[ScreenTypeIndoorData].enabled = temperature.canShowData();
+      screens[ScreenTypeIndoorData].enabled = barometer.canShowData();
       break;
     default:
       break;
@@ -94,6 +85,23 @@ void loop() {
   }
   currentScreenIndex = (++currentScreenIndex) % numberOfScreens;
 }
+
+void showTimeScreen() {
+  display.showTimeScreen(clock.getTime(), clock.getDate());
+}
+
+void showAnotherScreen() {
+  display.showStartupScreen();
+}
+
+void showNYRemainTime() {
+  display.showNYRemainTime(clock.getNYRemainingTime());
+}
+
+void showTemperatureScreen() {
+  display.showIndoorData(barometer.getTemperature(), barometer.getPressure());
+}
+
 //
 // #undef OLD_CODE
 // #ifdef OLD_CODE

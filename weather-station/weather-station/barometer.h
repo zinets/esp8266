@@ -1,14 +1,13 @@
 #include <Arduino.h>
 
-class Temperature {
+class Barometer {
 private:
-  bool dataIsReady;
+  bool dataIsReady = false;
   float pressure;
   float temperature;
 public:
-  Temperature();
   void adjustData();
-  bool canShowData();
+  bool canShowData() { return dataIsReady; };
 
   String getPressure();
   String getTemperature();
