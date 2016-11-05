@@ -2,10 +2,9 @@
 
 class Clock {
 private:
-  int localUtcOffset;
   RTC_DS1307 rtc;
 public:
-  Clock(); //(int utcOffset);
+  Clock();
   void adjustDateTime(time_t dateTime);
 // getters
   String getTime();

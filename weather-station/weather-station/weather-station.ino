@@ -11,7 +11,9 @@
 #include "display.h"
 #include "clock.h"
 #include "barometer.h"
+#include "udp_time.h"
 
+#define TIME_ZONE +2
 
 Display display;
 Clock clock;
@@ -48,13 +50,17 @@ int currentScreenIndex = 0;
 
 // период обновления температуры/давления в минутах
 #define UPDATE_BARO_PERIOD (10 * 60 * 1000)
+// период обновления времени в часах
+#define UPDATE_TIME_PERIOD ( 1 * 60 * 60 * 1000)
 
 typedef struct FLAGS {
 	unsigned char shouldUpdateBaro: 1;
   unsigned char shouldConnectWiFi: 1;
   unsigned char isWiFiconnected: 1;
+  unsigned char shouldUpdateTime: 1;
 
   unsigned long nextUpdateBaroTime;
+  unsigned long nextUpdateTimeTime;
 } FLAGS;
 volatile FLAGS flags;
 
@@ -72,6 +78,35 @@ void setup() {
   flags.shouldConnectWiFi = true;
 }
 
+void connectToWiFi() {
+  Serial.println("try to connect to wifi");
+  WiFiManager wifiManager;
+  // wifiManager.resetSettings();
+  wifiManager.setAPCallback(configModeCallback);
+
+  if (wifiManager.autoConnect()) {
+    flags.isWiFiconnected = true;
+    flags.shouldUpdateTime = true;
+  } else {
+    Serial.println("failed to connect and hit timeout");
+
+    ESP.reset();
+    // delay(1000);
+    flags.isWiFiconnected = false;
+  }
+  flags.shouldConnectWiFi = false;
+}
+
+void updateTime() {
+  time_t now = getNtpTime(TIME_ZONE);
+  if (now > 0) {
+    clock.adjustDateTime(now);
+  }
+
+  flags.shouldUpdateTime = false;
+  flags.nextUpdateTimeTime = millis() + UPDATE_TIME_PERIOD;
+}
+
 void loop() {
   if (flags.shouldUpdateBaro) {
     barometer.adjustData();
@@ -79,21 +114,9 @@ void loop() {
     flags.nextUpdateBaroTime = millis() + UPDATE_BARO_PERIOD;
     flags.shouldUpdateBaro = false;
   } else if (flags.shouldConnectWiFi) {
-    Serial.println("try to connect to wifi");
-    WiFiManager wifiManager;
-    // wifiManager.resetSettings();
-    wifiManager.setAPCallback(configModeCallback);
-
-    if (wifiManager.autoConnect()) {
-      flags.isWiFiconnected = true;
-    } else {
-      Serial.println("failed to connect and hit timeout");
-
-      ESP.reset();
-      // delay(1000);
-      flags.isWiFiconnected = false;
-    }
-    flags.shouldConnectWiFi = false;
+    connectToWiFi();
+  } else if (flags.shouldUpdateTime) {
+    updateTime();
   }
 
   switch (currentScreenIndex) {
@@ -119,6 +142,7 @@ void loop() {
   currentScreenIndex = (++currentScreenIndex) % numberOfScreens;
 
   flags.shouldUpdateBaro = millis() > flags.nextUpdateBaroTime;
+  flags.shouldUpdateTime = millis() > flags.nextUpdateTimeTime;
 }
 
 void showTimeScreen() {
@@ -287,13 +311,13 @@ void configModeCallback (WiFiManager *myWiFiManager) {
 //
 //
 //
-//   WiFi.hostByName(timerServerDNSName, timeServer);
-//   Serial.print("Time server IP: ");
-//   Serial.println(timeServer.toString());
-//
-//   Udp.begin(localPort);
-//   Serial.print("UDP local port: ");
-//   Serial.println(Udp.localPort());
+  // WiFi.hostByName(timerServerDNSName, timeServer);
+  // Serial.print("Time server IP: ");
+  // Serial.println(timeServer.toString());
+  //
+  // Udp.begin(localPort);
+  // Serial.print("UDP local port: ");
+  // Serial.println(Udp.localPort());
 //
 //   time_t t = getNtpTime();
 //   if (t != 0) {

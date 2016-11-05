@@ -1,8 +1,6 @@
 #include "clock.h"
 
-Clock::Clock(/*int utcOffset*/) {
-  localUtcOffset = 2; //utcOffset;
-
+Clock::Clock() {
   rtc = RTC_DS1307();
   if (!rtc.begin()) {
     Serial.println("Hardware problem with RTC_1307?");
