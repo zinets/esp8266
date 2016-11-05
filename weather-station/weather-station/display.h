@@ -45,7 +45,7 @@ public:
   void showStartupScreen();
   void showTimeScreen(String currentTime, String currentDate);
   void showNYRemainTime(String remainingTime);
-  void showTemperature(float currentTemperature);
+  void showIndoorData(String currentTemperature, String currentPressure);
 
   void showCurrentWeather();
   void showIndorState();

@@ -52,13 +52,13 @@ void Display::showNYRemainTime(String remainingTime) {
   u8g2.sendBuffer();
 }
 
-void Display::showTemperature(float currentTemperature) {
+void Display::showIndoorData(String currentTemperature, String currentPressure) {
   u8g2.clearBuffer();
   u8g2.drawXBMP(0, 2, temperature_width, temperature_height, temperature_bits);
   u8g2.setFont(u8g2_font_unifont_t_cyrillic);
-  String value = String (currentTemperature) + "АБ";
-  u8g2.drawStr(50, 25, value.c_str());
 
-  u8g2.drawStr(50, 45, "тепло");
+  u8g2.drawStr(50, 25, currentTemperature.c_str());
+  u8g2.drawStr(50, 45, currentPressure.c_str());
+
   u8g2.sendBuffer();
 }

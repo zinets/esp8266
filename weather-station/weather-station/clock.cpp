@@ -62,14 +62,7 @@ String Clock::getDate() {
 
 bool Clock::canShowNYRemainTime() {
   String t = getNYRemainingTime();
-  Serial.println(t);
-  Serial.println(t.length());
   bool res = t.length() > 0;
-  if (res) {
-    Serial.println("TRUE");
-  } else {
-    Serial.println("FALSE");
-  }
   return res;
 }
 
@@ -79,11 +72,6 @@ String Clock::getNYRemainingTime() {
 
   DateTime newYearDay = DateTime(nextYear, 1, 1, 0, 0, 0);
   TimeSpan d = newYearDay - dt;
-  Serial.print ("remain ");
-  Serial.println(d.days());
-  Serial.println(d.hours());
-  Serial.println(d.minutes());
-
   if (d.days() > 60) {
     return "";
   }

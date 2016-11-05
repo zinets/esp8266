@@ -1,10 +1,8 @@
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BMP085_U.h>
+#include <Arduino.h>
 
 class Temperature {
 private:
-  Adafruit_BMP085_Unified bmpSensor;
-  bool dataIsReady = false;
+  bool dataIsReady;
   float pressure;
   float temperature;
 public:
@@ -12,6 +10,6 @@ public:
   void adjustData();
   bool canShowData();
 
-  String pressure();
-  String temperature();
+  String getPressure();
+  String getTemperature();
 };

@@ -24,17 +24,16 @@ typedef struct Screen {
 enum ScreenType {
   ScreenTypeTime,
   ScreenTypeNYRemain,
-  ScreenTypeTemperature,
+  ScreenTypeIndoorData,
 };
 
 int const numberOfScreens = 3;
 Screen screens[numberOfScreens] = {
-  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 4, .enabled = false},
-  /* ScreenTypeNYRemain */    {.displayFunc = showNYRemainTime, .timeout = 3, .enabled = false},
-  /* ScreenTypeTemperature */ {.displayFunc = showTemperatureScreen, .timeout = 3, .enabled = true},
+  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 4, .enabled = true},
+  /* ScreenTypeNYRemain */    {.displayFunc = showNYRemainTime, .timeout = 3, .enabled = true},
+  /* ScreenTypeIndoorData */  {.displayFunc = showTemperatureScreen, .timeout = 3, .enabled = false},
 };
 int currentScreenIndex = 0;
-
 
 #define DEBUG
 #define SDA_PIN 12
@@ -46,11 +45,10 @@ void setup() {
 
   display = Display();
   clock = Clock();
+  temperature = Temperature();
 
   screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
 }
-
-
 
 void showTimeScreen() {
   display.showTimeScreen(clock.getTime(), clock.getDate());
@@ -65,13 +63,21 @@ void showNYRemainTime() {
 }
 
 void showTemperatureScreen() {
-  display.showTemperature(25.6);
+  display.showIndoorData(temperature.getTemperature(), temperature.getPressure());
 }
 
 void loop() {
+  static bool measured = false;
+  if (!measured) {
+    temperature.adjustData();
+    measured = true;
+  }
   switch (currentScreenIndex) {
     case ScreenTypeNYRemain:
       screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
+      break;
+    case ScreenTypeIndoorData:
+      screens[ScreenTypeIndoorData].enabled = temperature.canShowData();
       break;
     default:
       break;
@@ -171,20 +177,20 @@ void loop() {
 // }
 //
 // void printTemperature() {
-//   sensors_event_t event;
-//   bmp.getEvent(&event);
-//
-//   /* Display the results (barometric pressure is measure in hPa) */
-//   if (event.pressure) {
-//     float temperature;
-//     bmp.getTemperature(&temperature);
-//
-//     Serial.print("Temperature: ");
-//     Serial.print(temperature);
-//     Serial.println(" C");
-//   } else {
-//     Serial.println("Sensor error");
-//   }
+  // sensors_event_t event;
+  // bmp.getEvent(&event);
+  //
+  // /* Display the results (barometric pressure is measure in hPa) */
+  // if (event.pressure) {
+  //   float temperature;
+  //   bmp.getTemperature(&temperature);
+  //
+  //   Serial.print("Temperature: ");
+  //   Serial.print(temperature);
+  //   Serial.println(" C");
+  // } else {
+  //   Serial.println("Sensor error");
+  // }
 // }
 //
 // void setup() {
