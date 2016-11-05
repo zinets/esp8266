@@ -39,8 +39,12 @@ int currentScreenIndex = 0;
 #define SDA_PIN 12
 #define SCL_PIN 2
 
+// период обновления температуры/давления в минутах
+#define UPDATE_BARO_PERIOD (10 * 60 * 1000)
+
 typedef struct FLAGS {
 	unsigned char shouldUpdateBaro: 1;
+  unsigned long nextUpdateBaroTime;
 } FLAGS;
 volatile FLAGS flags;
 
@@ -60,6 +64,8 @@ void setup() {
 void loop() {
   if (flags.shouldUpdateBaro) {
     barometer.adjustData();
+
+    flags.nextUpdateBaroTime = millis() + UPDATE_BARO_PERIOD;
     flags.shouldUpdateBaro = false;
   }
 
@@ -84,6 +90,8 @@ void loop() {
     }
   }
   currentScreenIndex = (++currentScreenIndex) % numberOfScreens;
+
+  flags.shouldUpdateBaro = millis() > flags.nextUpdateBaroTime;
 }
 
 void showTimeScreen() {

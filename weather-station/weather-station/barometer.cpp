@@ -14,7 +14,7 @@ void Barometer::adjustData() {
   if (event.pressure) {
     bmp.getTemperature(&temperature);
     pressure = event.pressure;
-
+    Serial.println("Barometer::adjustData()");
     dataIsReady = true;
   } else {
     Serial.println("Sensor error");
