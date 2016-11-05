@@ -5,12 +5,14 @@
 // Display
 #include "display.h"
 #include "clock.h"
+#include "temperature.h"
 
 Display display;
 Clock clock;
+Temperature temperature;
 
 void showTimeScreen();
-void showAnotherScreen();
+void showTemperatureScreen();
 void showNYRemainTime();
 
 typedef struct Screen {
@@ -22,14 +24,14 @@ typedef struct Screen {
 enum ScreenType {
   ScreenTypeTime,
   ScreenTypeNYRemain,
-  ScreenTypeAnother,
+  ScreenTypeTemperature,
 };
 
 int const numberOfScreens = 3;
 Screen screens[numberOfScreens] = {
-  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 2, .enabled = true},
-  /* ScreenTypeNYRemain */    {.displayFunc = showNYRemainTime, .timeout = 6, .enabled = true},
-  /* ScreenTypeAnother */     {.displayFunc = showAnotherScreen, .timeout = 1, .enabled = true},
+  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 4, .enabled = false},
+  /* ScreenTypeNYRemain */    {.displayFunc = showNYRemainTime, .timeout = 3, .enabled = false},
+  /* ScreenTypeTemperature */ {.displayFunc = showTemperatureScreen, .timeout = 3, .enabled = true},
 };
 int currentScreenIndex = 0;
 
@@ -60,6 +62,10 @@ void showAnotherScreen() {
 
 void showNYRemainTime() {
   display.showNYRemainTime(clock.getNYRemainingTime());
+}
+
+void showTemperatureScreen() {
+  display.showTemperature(25.6);
 }
 
 void loop() {
