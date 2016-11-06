@@ -11,7 +11,14 @@
 #include "display.h"
 #include "clock.h"
 #include "barometer.h"
-#include "udp_time.h"
+#include "wifiWorker.h"
+
+#include "JsonStreamingParser.h"
+#include "JsonListener.h"
+#include "Example.h"
+
+JsonStreamingParser parser;
+ExampleListener listener;
 
 #define TIME_ZONE +2
 
@@ -76,6 +83,15 @@ void setup() {
 
   flags.shouldUpdateBaro = true;
   flags.shouldConnectWiFi = true;
+
+  Serial.println(String(ESP.getFreeHeap()));
+  parser.setListener(&listener);
+  // put your setup code here, to run once:
+  char json[] = "{\"a\":3, \"b\":{\"c\":\"d\"}}";
+  for (int i = 0; i < sizeof(json); i++) {
+    parser.parse(json[i]);
+  }
+  Serial.println(String(ESP.getFreeHeap()));
 }
 
 void connectToWiFi() {
@@ -98,7 +114,8 @@ void connectToWiFi() {
 }
 
 void updateTime() {
-  time_t now = getNtpTime(TIME_ZONE);
+  WiFiWorker w = WiFiWorker();
+  time_t now = w.getNtpTime(TIME_ZONE);
   if (now > 0) {
     clock.adjustDateTime(now);
   }

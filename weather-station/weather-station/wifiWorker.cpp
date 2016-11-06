@@ -1,16 +1,10 @@
-#include "udp_time.h"
-#include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
+#include "wifiWorker.h"
 
-const char* timerServerDNSName = "0.europe.pool.ntp.org";
-const unsigned int localPort = 8888;
-const int NTP_PACKET_SIZE = 48;
-byte packetBuffer[NTP_PACKET_SIZE];
+WiFiWorker::WiFiWorker() {
+  udp = WiFiUDP();
+}
 
-IPAddress timeServer;
-WiFiUDP Udp;
-
-void sendNTPpacket(IPAddress &address) {
+void WiFiWorker::sendNTPpacket(IPAddress &address) {
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
   packetBuffer[0] = 0b11100011; // LI, Version, Mode
   packetBuffer[1] = 0;          // Stratum, or type of clock
@@ -22,29 +16,29 @@ void sendNTPpacket(IPAddress &address) {
   packetBuffer[14]  = 49;
   packetBuffer[15]  = 52;
 
-  Udp.beginPacket(address, 123);
-  Udp.write(packetBuffer, NTP_PACKET_SIZE);
-  Udp.endPacket();
+  udp.beginPacket(address, 123);
+  udp.write(packetBuffer, NTP_PACKET_SIZE);
+  udp.endPacket();
 }
 
-time_t getNtpTime(int timeZone) {
+time_t WiFiWorker::getNtpTime(int timeZone) {
   WiFi.hostByName(timerServerDNSName, timeServer);
-  Serial.print("Time server IP: ");
-  Serial.println(timeServer.toString());
+  // Serial.print("Time server IP: ");
+  // Serial.println(timeServer.toString());
 
-  Udp.begin(localPort);
-  Serial.print("UDP local port: ");
-  Serial.println(Udp.localPort());
+  udp.begin(localPort);
+  // Serial.print("UDP local port: ");
+  // Serial.println(udp.localPort());
 
-  while (Udp.parsePacket() > 0) ; // discard any previously received packets
-  Serial.println("Transmit NTP request");
+  while (udp.parsePacket() > 0) ; // discard any previously received packets
+  // Serial.println("Transmit NTP request");
   sendNTPpacket(timeServer);
   uint32_t beginWait = millis();
   while (millis() - beginWait < 1500) {
-    int size = Udp.parsePacket();
+    int size = udp.parsePacket();
     if (size >= NTP_PACKET_SIZE) {
-      Serial.println("Receive NTP response");
-      Udp.read(packetBuffer, NTP_PACKET_SIZE);
+      // Serial.println("Receive NTP response");
+      udp.read(packetBuffer, NTP_PACKET_SIZE);
       unsigned long secsSince1900;
       // convert four bytes starting at location 40 to a long integer
       secsSince1900 =  (unsigned long)packetBuffer[40] << 24;
@@ -52,11 +46,11 @@ time_t getNtpTime(int timeZone) {
       secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
       secsSince1900 |= (unsigned long)packetBuffer[43];
       #define SECS_PER_HOUR (60 * 60)
-      Serial.println("since 1900 - " + String(secsSince1900));
+      // Serial.println("since 1900 - " + String(secsSince1900));
       time_t result = secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
-      Serial.println("result - " + String(result));
-      Serial.println("result - " + String(secsSince1900 - 2208988800UL));
-
+      // Serial.println("result - " + String(result));
+      // Serial.println("result - " + String(secsSince1900 - 2208988800UL));
+      Serial.println("NTP time received");
       return result;
     }
   }
