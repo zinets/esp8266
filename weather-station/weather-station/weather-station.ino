@@ -17,9 +17,9 @@
 #define API_KEY "d85b09d20c0e17b4"
 #define LOCATION "ur/zaporizhzhya"
 
-Display display;
-Clock clock;
-Barometer barometer;
+Display *display;
+Clock *clock;
+Barometer *barometer;
 
 void showTimeScreen();
 void showTemperatureScreen();
@@ -70,11 +70,11 @@ void setup() {
   Serial.begin(115200);
   Wire.begin(SDA_PIN, SCL_PIN);
 
-  display = Display();
-  clock = Clock();
-  barometer = Barometer();
+  display = new Display();
+  clock = new Clock();
+  barometer = new Barometer();
 
-  screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
+  screens[ScreenTypeNYRemain].enabled = clock->canShowNYRemainTime();
 
   flags.shouldUpdateBaro = true;
   flags.shouldConnectWiFi = true;
@@ -103,7 +103,7 @@ void updateTime() {
   WiFiWorker w;
   time_t now = w.getNtpTime(TIME_ZONE);
   if (now > 0) {
-    clock.adjustDateTime(now);
+    clock->adjustDateTime(now);
   }
 
   flags.shouldUpdateTime = false;
@@ -114,7 +114,7 @@ void updateTime() {
 
 void loop() {
   if (flags.shouldUpdateBaro) {
-    barometer.adjustData();
+    barometer->adjustData();
 
     flags.nextUpdateBaroTime = millis() + UPDATE_BARO_PERIOD;
     flags.shouldUpdateBaro = false;
@@ -126,10 +126,10 @@ void loop() {
 
   switch (currentScreenIndex) {
     case ScreenTypeNYRemain:
-      screens[ScreenTypeNYRemain].enabled = clock.canShowNYRemainTime();
+      screens[ScreenTypeNYRemain].enabled = clock->canShowNYRemainTime();
       break;
     case ScreenTypeIndoorData:
-      screens[ScreenTypeIndoorData].enabled = barometer.canShowData();
+      screens[ScreenTypeIndoorData].enabled = barometer->canShowData();
       break;
     default:
       break;
@@ -151,19 +151,19 @@ void loop() {
 }
 
 void showTimeScreen() {
-  display.showTimeScreen(clock.getTime(), clock.getDate());
+  display->showTimeScreen(clock->getTime(), clock->getDate());
 }
 
 void showAnotherScreen() {
-  display.showStartupScreen();
+  display->showStartupScreen();
 }
 
 void showNYRemainTime() {
-  display.showNYRemainTime(clock.getNYRemainingTime());
+  display->showNYRemainTime(clock->getNYRemainingTime());
 }
 
 void showTemperatureScreen() {
-  display.showIndoorData(barometer.getTemperature(), barometer.getPressure());
+  display->showIndoorData(barometer->getTemperature(), barometer->getPressure());
 }
 
 void configModeCallback (WiFiManager *myWiFiManager) {
@@ -171,7 +171,7 @@ void configModeCallback (WiFiManager *myWiFiManager) {
   Serial.println(WiFi.softAPIP());
   String apName = myWiFiManager->getConfigPortalSSID();
   Serial.println(apName);
-  display.showConfigData(apName);
+  display->showConfigData(apName);
 }
 
 //

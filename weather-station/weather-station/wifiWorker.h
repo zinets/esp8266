@@ -17,15 +17,22 @@ private:
   IPAddress timeServer;
   WiFiUDP udp;
 
+  String currentKey;
+
   void sendNTPpacket(IPAddress &address);
   void parseUrl(String url);
 public:
   WiFiWorker();
 
+  // updates
   time_t getNtpTime(int timeZone);
   void updateWeatherCondition(String apiKey, String query);
   void updateAstronomy(String apiKey, String query);
 
+  // getters
+  // WeatherCondition getCurrentState();
+
+  // listener
   virtual void whitespace(char c);
   virtual void startDocument();
   virtual void key(String key);

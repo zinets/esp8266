@@ -115,13 +115,18 @@ void WiFiWorker::updateAstronomy(String apiKey, String query) {
 
 void WiFiWorker::whitespace(char c) {}
 void WiFiWorker::startDocument() {
-  Serial.println("start..");
+  // Serial.println("start..");
 }
 void WiFiWorker::key(String key) {
-  Serial.println("key = " + key);
+  // Serial.println("key = " + key);
+  currentKey = key;
 }
 void WiFiWorker::value(String value) {
-  Serial.println("val = " + value);
+  if (currentKey == "temp_c") {
+    // currentState.temperature = value;
+  } else if (currentKey == "icon") {
+
+  }
 }
 void WiFiWorker::endArray() {
   Serial.println("arr end");
@@ -138,3 +143,7 @@ void WiFiWorker::startArray() {
 void WiFiWorker::startObject() {
   Serial.println("obj start");
 }
+
+// WeatherCondition WiFiWorker::getCurrentState() {
+//
+// }

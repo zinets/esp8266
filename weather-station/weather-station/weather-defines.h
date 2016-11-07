@@ -14,6 +14,6 @@ typedef enum WeatherCondition {
 
 typedef struct WeatherState {
   WeatherCondition condition;
-  float temperature;
+  String temperature;
   float pressure;
 } WeatherState;
