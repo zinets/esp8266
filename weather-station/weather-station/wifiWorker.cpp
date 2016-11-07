@@ -60,7 +60,12 @@ time_t WiFiWorker::getNtpTime(int timeZone) {
 }
 
 void parseUrl(String url) {
-
+  WiFiClient client;
+    const int httpPort = 80;
+    if (!client.connect("api.wunderground.com", httpPort)) {
+      Serial.println("connection failed");
+      return;
+    }
 }
 
 void WiFiWorker::updateWeatherCondition(String apiKey, String query) {
