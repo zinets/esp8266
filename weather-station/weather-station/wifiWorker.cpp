@@ -67,3 +67,18 @@ void WiFiWorker::updateWeatherCondition(String apiKey, String query) {
   String q = "/api/" + apiKey + "/conditions/q/" + query + ".json";
   parseUrl(q);
 }
+
+void WiFiWorker::updateAstronomy(String apiKey, String query) {
+  String q = "/api/" + apiKey + "/astronomy/q/" + query + ".json";
+  parseUrl(q);
+}
+
+void WiFiWorker::whitespace(char c) {}
+void WiFiWorker::startDocument() {}
+void WiFiWorker::key(String key) {}
+void WiFiWorker::value(String value) {}
+void WiFiWorker::endArray() {}
+void WiFiWorker::endObject() {}
+void WiFiWorker::endDocument() {}
+void WiFiWorker::startArray() {}
+void WiFiWorker::startObject() {}
