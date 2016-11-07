@@ -58,3 +58,12 @@ time_t WiFiWorker::getNtpTime(int timeZone) {
   Serial.println("No NTP response");
   return 0;
 }
+
+void parseUrl(String url) {
+
+}
+
+void WiFiWorker::updateWeatherCondition(String apiKey, String query) {
+  String q = "/api/" + apiKey + "/conditions/q/" + query + ".json";
+  parseUrl(q);
+}
