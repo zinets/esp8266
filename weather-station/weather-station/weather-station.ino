@@ -13,13 +13,6 @@
 #include "barometer.h"
 #include "wifiWorker.h"
 
-#include "JsonStreamingParser.h"
-#include "JsonListener.h"
-#include "Example.h"
-
-JsonStreamingParser parser;
-ExampleListener listener;
-
 #define TIME_ZONE +2
 
 Display display;
@@ -83,15 +76,6 @@ void setup() {
 
   flags.shouldUpdateBaro = true;
   flags.shouldConnectWiFi = true;
-
-  Serial.println(String(ESP.getFreeHeap()));
-  parser.setListener(&listener);
-  // put your setup code here, to run once:
-  char json[] = "{\"a\":3, \"b\":{\"c\":\"d\"}}";
-  for (int i = 0; i < sizeof(json); i++) {
-    parser.parse(json[i]);
-  }
-  Serial.println(String(ESP.getFreeHeap()));
 }
 
 void connectToWiFi() {
