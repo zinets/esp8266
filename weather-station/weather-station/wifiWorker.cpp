@@ -59,13 +59,48 @@ time_t WiFiWorker::getNtpTime(int timeZone) {
   return 0;
 }
 
-void parseUrl(String url) {
+void WiFiWorker::parseUrl(String url) {
   WiFiClient client;
-    const int httpPort = 80;
-    if (!client.connect("api.wunderground.com", httpPort)) {
-      Serial.println("connection failed");
+  if (!client.connect("api.wunderground.com", 80)) {
+    Serial.println("connection failed");
+    return;
+  }
+  Serial.print("Requesting URL: ");
+  Serial.println(url);
+
+  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+               "Host: api.wunderground.com\r\n" +
+               "Connection: close\r\n\r\n");
+  int retryCounter = 0;
+  while(!client.available()) {
+    delay(1000);
+    retryCounter++;
+    if (retryCounter > 10) {
+      Serial.print("Connection timeout");
       return;
     }
+  }
+
+  JsonStreamingParser parser;
+  parser.setListener(this);
+
+  int pos = 0;
+  boolean isBody = false;
+  char c;
+
+  int size = 0;
+  client.setNoDelay(false);
+  while(client.connected()) {
+    while((size = client.available()) > 0) {
+      c = client.read();
+      if (c == '{' || c == '[') {
+        isBody = true;
+      }
+      if (isBody) {
+        parser.parse(c);
+      }
+    }
+  }
 }
 
 void WiFiWorker::updateWeatherCondition(String apiKey, String query) {
@@ -79,11 +114,27 @@ void WiFiWorker::updateAstronomy(String apiKey, String query) {
 }
 
 void WiFiWorker::whitespace(char c) {}
-void WiFiWorker::startDocument() {}
-void WiFiWorker::key(String key) {}
-void WiFiWorker::value(String value) {}
-void WiFiWorker::endArray() {}
-void WiFiWorker::endObject() {}
-void WiFiWorker::endDocument() {}
-void WiFiWorker::startArray() {}
-void WiFiWorker::startObject() {}
+void WiFiWorker::startDocument() {
+  Serial.println("start..");
+}
+void WiFiWorker::key(String key) {
+  Serial.println("key = " + key);
+}
+void WiFiWorker::value(String value) {
+  Serial.println("val = " + value);
+}
+void WiFiWorker::endArray() {
+  Serial.println("arr end");
+}
+void WiFiWorker::endObject() {
+  Serial.println("obj end");
+}
+void WiFiWorker::endDocument() {
+  Serial.println("doc end");
+}
+void WiFiWorker::startArray() {
+  Serial.println("arr start");
+}
+void WiFiWorker::startObject() {
+  Serial.println("obj start");
+}

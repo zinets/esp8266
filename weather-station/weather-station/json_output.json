@@ -1,0 +1,94 @@
+
+{
+  "response": {
+    "version":"0.1",
+    "termsofService":"http://www.wunderground.com/weather/api/d/terms.html",
+    "features": {
+      "conditions": 1
+    }
+  }
+  ,	"current_observation": {
+    "image": {
+      "url":"http://icons.wxug.com/graphics/wu2/logo_130x80.png",
+      "title":"Weather Underground",
+      "link":"http://www.wunderground.com"
+    },
+    "display_location": {
+      "full":"Zaporizhzhya, Ukraine",
+      "city":"Zaporizhzhya",
+      "state":"23",
+      "state_name":"Ukraine",
+      "country":"UR",
+      "country_iso3166":"UA",
+      "zip":"00000",
+      "magic":"3",
+      "wmo":"34601",
+      "latitude":"47.81999969",
+      "longitude":"35.18999863",
+      "elevation":"86.0"
+    },
+    "observation_location": {
+      "full":"Zaporizhzhia, ",
+      "city":"Zaporizhzhia",
+      "state":"",
+      "country":"UR",
+      "country_iso3166":"UA",
+      "latitude":"47.86700439",
+      "longitude":"35.31569290",
+      "elevation":"374 ft"
+    },
+    "estimated": {
+    },
+    "station_id":"UKDE",
+    "observation_time":"Last Updated on November 7, 9:00 PM EET",
+    "observation_time_rfc822":"Mon, 07 Nov 2016 21:00:00 +0200",
+    "observation_epoch":"1478545200",
+    "local_time_rfc822":"Mon, 07 Nov 2016 21:26:27 +0200",
+    "local_epoch":"1478546787",
+    "local_tz_short":"EET",
+    "local_tz_long":"Europe/Kiev",
+    "local_tz_offset":"+0200",
+    "weather":"Mostly Cloudy",
+    "temperature_string":"57 F (14 C)",
+    "temp_f":57,
+    "temp_c":14,
+    "relative_humidity":"82%",
+    "wind_string":"From the South at 16 MPH",
+    "wind_dir":"South",
+    "wind_degrees":180,
+    "wind_mph":16,
+    "wind_gust_mph":0,
+    "wind_kph":25,
+    "wind_gust_kph":0,
+    "pressure_mb":"1008",
+    "pressure_in":"29.77",
+    "pressure_trend":"0",
+    "dewpoint_string":"52 F (11 C)",
+    "dewpoint_f":52,
+    "dewpoint_c":11,
+    "heat_index_string":"NA",
+    "heat_index_f":"NA",
+    "heat_index_c":"NA",
+    "windchill_string":"NA",
+    "windchill_f":"NA",
+    "windchill_c":"NA",
+    "feelslike_string":"57 F (14 C)",
+    "feelslike_f":"57",
+    "feelslike_c":"14",
+    "visibility_mi":"6.2",
+    "visibility_km":"10.0",
+    "solarradiation":"--",
+    "UV":"0","precip_1hr_string":"-9999.00 in (-9999.00 mm)",
+    "precip_1hr_in":"-9999.00",
+    "precip_1hr_metric":"--",
+    "precip_today_string":"0.00 in (0.0 mm)",
+    "precip_today_in":"0.00",
+    "precip_today_metric":"0.0",
+    "icon":"mostlycloudy",
+    "icon_url":"http://icons.wxug.com/i/c/k/nt_mostlycloudy.gif",
+    "forecast_url":"http://www.wunderground.com/global/stations/34601.html",
+    "history_url":"http://www.wunderground.com/history/airport/UKDE/2016/11/7/DailyHistory.html",
+    "ob_url":"http://www.wunderground.com/cgi-bin/findweather/getForecast?query=47.86700439,35.31569290",
+    "nowcast":""
+  }
+}

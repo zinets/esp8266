@@ -9,24 +9,7 @@
 #endif
 
 #include "resources.h"
-
-typedef enum WeatherCondition {
-  WeatherConditionClear,
-  WeatherConditionRain,
-  WeatherConditionSnow,
-  WeatherConditionSleet,
-  WeatherConditionWind,
-  WeatherConditionFog,
-  WeatherConditionCloudy,
-  WeatherConditionPartlyCloudy,
-  WeatherConditionIndoor,
-} WeatherCondition;
-
-typedef struct WeatherState {
-  WeatherCondition condition;
-  float temperature;
-  float pressure;
-} WeatherState;
+#include "weather-defines.h"
 
 class Display {
 private:

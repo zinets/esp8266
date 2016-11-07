@@ -1,0 +1,181 @@
+Requesting URL: /api/d85b09d20c0e17b4/conditions/q/ur/zaporizhzhya.json
+start..
+obj start
+key = response
+obj start
+key = version
+val = 0.1
+key = termsofService
+val = http://www.wunderground.com/weather/api/d/terms.html
+key = features
+obj start
+key = conditions
+val = 1
+obj end
+obj end
+key = current_observation
+obj start
+key = image
+obj start
+key = url
+val = http://icons.wxug.com/graphics/wu2/logo_130x80.png
+key = title
+val = Weather Underground
+key = link
+val = http://www.wunderground.com
+obj end
+key = display_location
+obj start
+key = full
+val = Zaporizhzhya, Ukraine
+key = city
+val = Zaporizhzhya
+key = state
+val = 23
+key = state_name
+val = Ukraine
+key = country
+val = UR
+key = country_iso3166
+val = UA
+key = zip
+val = 00000
+key = magic
+val = 3
+key = wmo
+val = 34601
+key = latitude
+val = 47.81999969
+key = longitude
+val = 35.18999863
+key = elevation
+val = 86.0
+obj end
+key = observation_location
+obj start
+key = full
+val = Zaporizhzhia,
+key = city
+val = Zaporizhzhia
+key = state
+val =
+key = country
+val = UR
+key = country_iso3166
+val = UA
+key = latitude
+val = 47.86700439
+key = longitude
+val = 35.31569290
+key = elevation
+val = 374 ft
+obj end
+key = estimated
+obj start
+obj end
+key = station_id
+val = UKDE
+key = observation_time
+val = Last Updated on November 7, 9:00 PM EET
+key = observation_time_rfc822
+val = Mon, 07 Nov 2016 21:00:00 +0200
+key = observation_epoch
+val = 1478545200
+key = local_time_rfc822
+val = Mon, 07 Nov 2016 21:26:27 +0200
+key = local_epoch
+val = 1478546787
+key = local_tz_short
+val = EET
+key = local_tz_long
+val = Europe/Kiev
+key = local_tz_offset
+val = +0200
+key = weather
+val = Mostly Cloudy
+key = temperature_string
+val = 57 F (14 C)
+key = temp_f
+val = 57
+key = temp_c
+val = 14
+key = relative_humidity
+val = 82%
+key = wind_string
+val = From the South at 16 MPH
+key = wind_dir
+val = South
+key = wind_degrees
+val = 180
+key = wind_mph
+val = 16
+key = wind_gust_mph
+val = 0
+key = wind_kph
+val = 25
+key = wind_gust_kph
+val = 0
+key = pressure_mb
+val = 1008
+key = pressure_in
+val = 29.77
+key = pressure_trend
+val = 0
+key = dewpoint_string
+val = 52 F (11 C)
+key = dewpoint_f
+val = 52
+key = dewpoint_c
+val = 11
+key = heat_index_string
+val = NA
+key = heat_index_f
+val = NA
+key = heat_index_c
+val = NA
+key = windchill_string
+val = NA
+key = windchill_f
+val = NA
+key = windchill_c
+val = NA
+key = feelslike_string
+val = 57 F (14 C)
+key = feelslike_f
+val = 57
+key = feelslike_c
+val = 14
+key = visibility_mi
+val = 6.2
+key = visibility_km
+val = 10.0
+key = solarradiation
+val = --
+key = UV
+val = 0
+key = precip_1hr_string
+val = -9999.00 in (-9999.00 mm)
+key = precip_1hr_in
+val = -9999.00
+key = precip_1hr_metric
+val = --
+key = precip_today_string
+val = 0.00 in (0.0 mm)
+key = precip_today_in
+val = 0.00
+key = precip_today_metric
+val = 0.0
+key = icon
+val = mostlycloudy
+key = icon_url
+val = http://icons.wxug.com/i/c/k/nt_mostlycloudy.gif
+key = forecast_url
+val = http://www.wunderground.com/global/stations/34601.html
+key = history_url
+val = http://www.wunderground.com/history/airport/UKDE/2016/11/7/DailyHistory.html
+key = ob_url
+val = http://www.wunderground.com/cgi-bin/findweather/getForecast?query=47.86700439,35.31569290
+key = nowcast
+val =
+obj end
+obj end

@@ -14,6 +14,8 @@
 #include "wifiWorker.h"
 
 #define TIME_ZONE +2
+#define API_KEY "d85b09d20c0e17b4"
+#define LOCATION "ur/zaporizhzhya"
 
 Display display;
 Clock clock;
@@ -98,7 +100,7 @@ void connectToWiFi() {
 }
 
 void updateTime() {
-  WiFiWorker w = WiFiWorker();
+  WiFiWorker w;
   time_t now = w.getNtpTime(TIME_ZONE);
   if (now > 0) {
     clock.adjustDateTime(now);
@@ -106,6 +108,8 @@ void updateTime() {
 
   flags.shouldUpdateTime = false;
   flags.nextUpdateTimeTime = millis() + UPDATE_TIME_PERIOD;
+
+  w.updateWeatherCondition(API_KEY, LOCATION);
 }
 
 void loop() {
