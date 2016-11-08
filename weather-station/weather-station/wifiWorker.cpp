@@ -125,10 +125,15 @@ void WiFiWorker::key(String key) {
 }
 void WiFiWorker::value(String value) {
   if (currentKey == "temp_c") {
-    // currentState.temperature = value;
+    lastWeatherCondition.temperature = value.toFloat();
   } else if (currentKey == "icon") {
-
+    lastWeatherCondition.condition = value;
+  } else if (currentKey == "pressure_in") {
+    lastWeatherCondition.pressure = value.toFloat() * 25.4; // ??
   }
+  lastWeatherCondition.ready = lastWeatherCondition.temperature > 0 &&
+  lastWeatherCondition.pressure > 0 &&
+  lastWeatherCondition.condition.length() > 0;
 }
 void WiFiWorker::endArray() {
   // Serial.println("arr end");
@@ -146,6 +151,6 @@ void WiFiWorker::startObject() {
   // Serial.println("obj start");
 }
 
-// WeatherCondition WiFiWorker::getCurrentState() {
-//
-// }
+WeatherState WiFiWorker::getCurrentState() {
+  return lastWeatherCondition;
+}

@@ -5,6 +5,7 @@
 #include <JsonListener.h>
 #include <JsonStreamingParser.h>
 
+#include "weather-defines.h"
 
 const int NTP_PACKET_SIZE = 48;
 
@@ -17,6 +18,8 @@ private:
   IPAddress timeServer;
   WiFiUDP *udp;
 
+  WeatherState lastWeatherCondition;
+
   String currentKey;
 
   void sendNTPpacket(IPAddress &address);
@@ -28,7 +31,7 @@ public:
   void updateAstronomy(String apiKey, String query);
 
   // getters
-  // WeatherCondition getCurrentState();
+  WeatherState getCurrentState();
 
   // listener
   virtual void whitespace(char c);

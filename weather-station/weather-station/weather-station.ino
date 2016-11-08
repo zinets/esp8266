@@ -25,6 +25,7 @@ WiFiWorker *worker;
 void showTimeScreen();
 void showTemperatureScreen();
 void showNYRemainTime();
+void showCurrentWeatherCondition();
 void configModeCallback (WiFiManager *myWiFiManager);
 
 typedef struct Screen {
@@ -37,13 +38,15 @@ enum ScreenType {
   ScreenTypeTime,
   ScreenTypeNYRemain,
   ScreenTypeIndoorData,
+  ScreenTypeWeather,
 };
 
-int const numberOfScreens = 3;
+int const numberOfScreens = 4;
 Screen screens[numberOfScreens] = {
   /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 4, .enabled = true},
   /* ScreenTypeNYRemain */    {.displayFunc = showNYRemainTime, .timeout = 3, .enabled = true},
   /* ScreenTypeIndoorData */  {.displayFunc = showTemperatureScreen, .timeout = 3, .enabled = false},
+  /* ScreenTypeWeather */     {.displayFunc = showCurrentWeatherCondition, .timeout = 3, .enabled = false},
 };
 int currentScreenIndex = 0;
 
@@ -159,6 +162,9 @@ void loop() {
     case ScreenTypeIndoorData:
       screens[ScreenTypeIndoorData].enabled = barometer->canShowData();
       break;
+    case ScreenTypeWeather:
+      screens[ScreenTypeWeather].enabled = worker->getCurrentState().ready;
+      break;
       // todo: готовы ли погода, прогноз etc
     default:
       break;
@@ -196,6 +202,11 @@ void showNYRemainTime() {
 
 void showTemperatureScreen() {
   display->showIndoorData(barometer->getTemperature(), barometer->getPressure());
+}
+
+void showCurrentWeatherCondition() {
+  WeatherState s = worker->getCurrentState();
+  display->showWeatherData(s.condition, String(s.temperature) + "C", String(s.pressure) + "mm.");
 }
 
 void configModeCallback (WiFiManager *myWiFiManager) {
