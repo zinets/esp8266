@@ -15,15 +15,13 @@ private:
 
   byte packetBuffer[NTP_PACKET_SIZE];
   IPAddress timeServer;
-  WiFiUDP udp;
+  WiFiUDP *udp;
 
   String currentKey;
 
   void sendNTPpacket(IPAddress &address);
   void parseUrl(String url);
 public:
-  WiFiWorker();
-
   // updates
   time_t getNtpTime(int timeZone);
   void updateWeatherCondition(String apiKey, String query);

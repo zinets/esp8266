@@ -51,18 +51,27 @@ int currentScreenIndex = 0;
 #define SCL_PIN 2
 
 // период обновления температуры/давления в минутах
-#define UPDATE_BARO_PERIOD (10 * 60 * 1000)
+#define UPDATE_BARO_PERIOD (1 * 60 * 1000)
 // период обновления времени в часах
-#define UPDATE_TIME_PERIOD ( 1 * 60 * 60 * 1000)
+#define UPDATE_TIME_PERIOD (1 * 60 * 60 * 1000)
+// период обновления погоды
+#define UPDATE_WEATHER_PERIOD (1 * 60 * 60 * 1000)
+// период обновления прогноза
+#define UPDATE_FORECAST_PERIOD (10 * 60 * 60 * 1000)
 
 typedef struct FLAGS {
-	unsigned char shouldUpdateBaro: 1;
-  unsigned char shouldConnectWiFi: 1;
   unsigned char isWiFiconnected: 1;
+
+  unsigned char shouldUpdateBaro: 1;
+  unsigned char shouldConnectWiFi: 1;
   unsigned char shouldUpdateTime: 1;
+  unsigned char shouldUpdateWeather: 1;
+  unsigned char shouldUpdateForecast: 1;
 
   unsigned long nextUpdateBaroTime;
   unsigned long nextUpdateTimeTime;
+  unsigned long nextUpdateWeatherTime;
+  unsigned long nextUpdateForecastTime;
 } FLAGS;
 volatile FLAGS flags;
 
@@ -78,6 +87,10 @@ void setup() {
 
   flags.shouldUpdateBaro = true;
   flags.shouldConnectWiFi = true;
+
+  flags.nextUpdateTimeTime = millis() + 3000;
+  flags.nextUpdateWeatherTime = millis() + 5000;
+
 }
 
 void connectToWiFi() {
@@ -108,8 +121,20 @@ void updateTime() {
 
   flags.shouldUpdateTime = false;
   flags.nextUpdateTimeTime = millis() + UPDATE_TIME_PERIOD;
+}
 
+void updateWeather() {
+  WiFiWorker w;
   w.updateWeatherCondition(API_KEY, LOCATION);
+
+  flags.shouldUpdateWeather = false;
+  flags.nextUpdateWeatherTime = millis() + UPDATE_WEATHER_PERIOD;
+}
+
+void updateForecast() {
+
+  flags.shouldUpdateForecast = false;
+  flags.nextUpdateForecastTime = millis() + UPDATE_FORECAST_PERIOD;
 }
 
 void loop() {
@@ -122,6 +147,10 @@ void loop() {
     connectToWiFi();
   } else if (flags.shouldUpdateTime) {
     updateTime();
+  } else if (flags.shouldUpdateWeather) {
+    updateWeather();
+  } else if (flags.shouldUpdateForecast) {
+    updateForecast();
   }
 
   switch (currentScreenIndex) {
@@ -131,6 +160,7 @@ void loop() {
     case ScreenTypeIndoorData:
       screens[ScreenTypeIndoorData].enabled = barometer->canShowData();
       break;
+      // todo: готовы ли погода, прогноз etc
     default:
       break;
   }
@@ -146,8 +176,11 @@ void loop() {
   }
   currentScreenIndex = (++currentScreenIndex) % numberOfScreens;
 
-  flags.shouldUpdateBaro = millis() > flags.nextUpdateBaroTime;
-  flags.shouldUpdateTime = millis() > flags.nextUpdateTimeTime;
+  unsigned long now = millis();
+  flags.shouldUpdateBaro = now > flags.nextUpdateBaroTime;
+  flags.shouldUpdateTime = now > flags.nextUpdateTimeTime;
+  flags.shouldUpdateWeather = now > flags.nextUpdateWeatherTime;
+  flags.shouldUpdateForecast = now > flags.nextUpdateForecastTime;
 }
 
 void showTimeScreen() {

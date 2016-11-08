@@ -1,9 +1,5 @@
 #include "wifiWorker.h"
 
-WiFiWorker::WiFiWorker() {
-  udp = WiFiUDP();
-}
-
 void WiFiWorker::sendNTPpacket(IPAddress &address) {
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
   packetBuffer[0] = 0b11100011; // LI, Version, Mode
@@ -16,29 +12,32 @@ void WiFiWorker::sendNTPpacket(IPAddress &address) {
   packetBuffer[14]  = 49;
   packetBuffer[15]  = 52;
 
-  udp.beginPacket(address, 123);
-  udp.write(packetBuffer, NTP_PACKET_SIZE);
-  udp.endPacket();
+
+  udp->beginPacket(address, 123);
+  udp->write(packetBuffer, NTP_PACKET_SIZE);
+  udp->endPacket();
 }
 
 time_t WiFiWorker::getNtpTime(int timeZone) {
+  time_t result = 0;
   WiFi.hostByName(timerServerDNSName, timeServer);
   // Serial.print("Time server IP: ");
   // Serial.println(timeServer.toString());
 
-  udp.begin(localPort);
+  udp = new WiFiUDP();
+  udp->begin(localPort);
   // Serial.print("UDP local port: ");
   // Serial.println(udp.localPort());
 
-  while (udp.parsePacket() > 0) ; // discard any previously received packets
+  while (udp->parsePacket() > 0) ; // discard any previously received packets
   // Serial.println("Transmit NTP request");
   sendNTPpacket(timeServer);
   uint32_t beginWait = millis();
   while (millis() - beginWait < 1500) {
-    int size = udp.parsePacket();
+    int size = udp->parsePacket();
     if (size >= NTP_PACKET_SIZE) {
       // Serial.println("Receive NTP response");
-      udp.read(packetBuffer, NTP_PACKET_SIZE);
+      udp->read(packetBuffer, NTP_PACKET_SIZE);
       unsigned long secsSince1900;
       // convert four bytes starting at location 40 to a long integer
       secsSince1900 =  (unsigned long)packetBuffer[40] << 24;
@@ -47,16 +46,19 @@ time_t WiFiWorker::getNtpTime(int timeZone) {
       secsSince1900 |= (unsigned long)packetBuffer[43];
       #define SECS_PER_HOUR (60 * 60)
       // Serial.println("since 1900 - " + String(secsSince1900));
-      time_t result = secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
+      result = secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
       // Serial.println("result - " + String(result));
       // Serial.println("result - " + String(secsSince1900 - 2208988800UL));
       Serial.println("NTP time received");
-      return result;
+
+      break;
     }
   }
 
-  Serial.println("No NTP response");
-  return 0;
+  if (result == 0) {
+    Serial.println("No NTP response");
+  }
+  return result;
 }
 
 void WiFiWorker::parseUrl(String url) {
