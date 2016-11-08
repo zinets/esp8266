@@ -20,6 +20,7 @@
 Display *display;
 Clock *clock;
 Barometer *barometer;
+WiFiWorker *worker;
 
 void showTimeScreen();
 void showTemperatureScreen();
@@ -82,15 +83,12 @@ void setup() {
   display = new Display();
   clock = new Clock();
   barometer = new Barometer();
+  worker = new WiFiWorker();
 
   screens[ScreenTypeNYRemain].enabled = clock->canShowNYRemainTime();
 
   flags.shouldUpdateBaro = true;
   flags.shouldConnectWiFi = true;
-
-  flags.nextUpdateTimeTime = millis() + 3000;
-  flags.nextUpdateWeatherTime = millis() + 5000;
-
 }
 
 void connectToWiFi() {
@@ -110,11 +108,13 @@ void connectToWiFi() {
     flags.isWiFiconnected = false;
   }
   flags.shouldConnectWiFi = false;
+
+  flags.nextUpdateTimeTime = millis() + 3000;
+  flags.nextUpdateWeatherTime = millis() + 5000;
 }
 
 void updateTime() {
-  WiFiWorker w;
-  time_t now = w.getNtpTime(TIME_ZONE);
+  time_t now = worker->getNtpTime(TIME_ZONE);
   if (now > 0) {
     clock->adjustDateTime(now);
   }
@@ -124,8 +124,7 @@ void updateTime() {
 }
 
 void updateWeather() {
-  WiFiWorker w;
-  w.updateWeatherCondition(API_KEY, LOCATION);
+  worker->updateWeatherCondition(API_KEY, LOCATION);
 
   flags.shouldUpdateWeather = false;
   flags.nextUpdateWeatherTime = millis() + UPDATE_WEATHER_PERIOD;

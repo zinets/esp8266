@@ -131,19 +131,19 @@ void WiFiWorker::value(String value) {
   }
 }
 void WiFiWorker::endArray() {
-  Serial.println("arr end");
+  // Serial.println("arr end");
 }
 void WiFiWorker::endObject() {
-  Serial.println("obj end");
+  // Serial.println("obj end");
 }
 void WiFiWorker::endDocument() {
-  Serial.println("doc end");
+  // Serial.println("doc end");
 }
 void WiFiWorker::startArray() {
-  Serial.println("arr start");
+  // Serial.println("arr start");
 }
 void WiFiWorker::startObject() {
-  Serial.println("obj start");
+  // Serial.println("obj start");
 }
 
 // WeatherCondition WiFiWorker::getCurrentState() {
