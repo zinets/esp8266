@@ -126,8 +126,16 @@ void WiFiWorker::key(String key) {
 void WiFiWorker::value(String value) {
   if (currentKey == "temp_c") {
     lastWeatherCondition.temperature = value.toFloat();
-  } else if (currentKey == "icon") {
-    lastWeatherCondition.condition = value;
+  } else if (currentKey == "icon_url") {
+    String url = value;
+    Serial.println(value);
+    int startIndex = url.lastIndexOf("/");
+    if (startIndex > -1) {
+      // Serial.println("start index" + String(startIndex + 1));
+      // Serial.println("substr" + value.substring(startIndex + 1));
+      lastWeatherCondition.condition = value.substring(startIndex + 1);
+      Serial.println(lastWeatherCondition.condition);
+    }
   } else if (currentKey == "pressure_in") {
     lastWeatherCondition.pressure = value.toFloat() * 25.4; // ??
   }
