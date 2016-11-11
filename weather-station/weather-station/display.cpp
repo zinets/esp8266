@@ -41,7 +41,7 @@ void Display::showTimeScreen(String currentTime, String currentDate) {
 
 void Display::showCurrentWeather() {
   u8g2.clearBuffer();
-  u8g2.drawXBMP(0, 0, 50, 50, wind_bits);
+  u8g2.drawXBMP(0, 0, 64, 64, tstorms_bits);
   u8g2.sendBuffer();
 }
 
@@ -65,7 +65,7 @@ void Display::showIndoorData(String currentTemperature, String currentPressure) 
 
 void Display::showWeatherData(String icon, String temperature, String pressure) {
   u8g2.clearBuffer();
-  u8g2.drawXBMP(0, 2, 60, 60, clear_night_bits);
+  u8g2.drawXBMP(0, 2, 64, 64, tstorms_bits);
 
   u8g2.setFont(u8g2_font_unifont_t_cyrillic);
   u8g2.drawStr(50, 25, temperature.c_str());
