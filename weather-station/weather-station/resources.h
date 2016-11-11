@@ -630,3 +630,49 @@ static const unsigned char flurries_bits[] U8X8_PROGMEM = {
 
 // chanceflurries, chancerain, chancesleet, chancesnow, chancetstorms, clear, cloudy, flurries,
 // fog, hazy, mostlycloudy, mostlysunny, partlycloudy, partlysunny, sleet, rain, snow, sunny, tstorms,
+
+typedef struct IconState {
+  String icon;
+  const unsigned char *xbm;
+} IconState;
+
+static const IconState states[] = {
+  {.icon = "chanceflurries",     .xbm = flurries_bits},
+  {.icon = "chancerain",         .xbm = chancerain_bits},
+  {.icon = "chancesleet",        .xbm = chancesnow_bits},
+  {.icon = "chancesnow",         .xbm = chancesnow_bits},
+  {.icon = "chancetstorms",      .xbm = chancetstorms_bits},
+  {.icon = "clear",              .xbm = sunny_bits},
+  {.icon = "cloudy",             .xbm = cloudy_bits},
+  {.icon = "flurries",           .xbm = flurries_bits},
+  {.icon = "fog",                .xbm = fog_bits},
+  {.icon = "hazy",               .xbm = fog_bits},
+  {.icon = "mostlycloudy",       .xbm = cloudy_bits},
+  {.icon = "mostlysunny",        .xbm = mostlysunny_bits},
+  {.icon = "nt_chanceflurries",  .xbm = flurries_bits},
+  {.icon = "nt_chancerain",      .xbm = chancerain_bits},
+  {.icon = "nt_chancesleet",     .xbm = chancesnow_bits},
+  {.icon = "nt_chancesnow",      .xbm = chancesnow_bits},
+  {.icon = "nt_chancetstorms",   .xbm = chancetstorms_bits},
+  {.icon = "nt_clear",           .xbm = nt_clear_bits},
+  {.icon = "nt_cloudy",          .xbm = cloudy_bits},
+  {.icon = "nt_flurries",        .xbm = flurries_bits},
+  {.icon = "nt_fog",             .xbm = fog_bits},
+  {.icon = "nt_hazy",            .xbm = fog_bits},
+  {.icon = "nt_mostlycloudy",    .xbm = cloudy_bits},
+  {.icon = "nt_mostlysunny",     .xbm = mostlysunny_bits},
+  {.icon = "nt_partlycloudy",    .xbm = nt_partlycloudy_bits},
+  {.icon = "nt_partlysunny",     .xbm = nt_partlycloudy_bits},
+  {.icon = "nt_rain",            .xbm = rain_bits},
+  {.icon = "nt_sleet",           .xbm = snow_bits},
+  {.icon = "nt_snow",            .xbm = snow_bits},
+  {.icon = "nt_sunny",           .xbm = nt_clear_bits},
+  {.icon = "nt_tstorms",         .xbm = tstorms_bits},
+  {.icon = "partlycloudy",       .xbm = mostlysunny_bits},
+  {.icon = "partlysunny",        .xbm = mostlysunny_bits},
+  {.icon = "rain",               .xbm = rain_bits},
+  {.icon = "sleet",              .xbm = snow_bits},
+  {.icon = "snow",               .xbm = snow_bits},
+  {.icon = "sunny",              .xbm = sunny_bits},
+  {.icon = "tstorms",            .xbm = tstorms_bits},
+};

@@ -65,9 +65,16 @@ void Display::showIndoorData(String currentTemperature, String currentPressure) 
 
 void Display::showWeatherData(String icon, String temperature, String pressure) {
   u8g2.clearBuffer();
-  u8g2.drawXBMP(0, 2, 64, 64, tstorms_bits);
-
   u8g2.setFont(u8g2_font_unifont_t_cyrillic);
+
+  int numberOfItems = sizeof(states) / sizeof(IconState);
+  for (int x = 0; x < numberOfItems; x++) {
+    const IconState state = states[x];
+    if (icon == state.icon) {
+      u8g2.drawXBMP(0, 0, 64, 64, state.xbm);
+    }
+  }
+
   u8g2.drawStr(50, 25, temperature.c_str());
   u8g2.drawStr(50, 45, pressure.c_str());
 

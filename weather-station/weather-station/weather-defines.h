@@ -18,4 +18,6 @@ typedef struct WeatherState {
   String condition;
   float temperature;
   float pressure;
+
+
 } WeatherState;
