@@ -1,4 +1,55 @@
 #include "wifiWorker.h"
+#include <U8g2lib.h>
+#include "resources.h"
+
+typedef struct IconState {
+  String condition;
+  const unsigned char *xbm;
+} IconState;
+
+const IconState states[] = {
+  {.condition = "chanceflurries", .xbm = flurries_bits},
+  {.condition = "chancerain", .xbm = chancerain_bits},
+  {.condition = "chancesleet", .xbm = chancesnow_bits},
+  {.condition = "chancesnow", .xbm = chancesnow_bits},
+  {.condition = "chancetstorms", .xbm = chancetstorms_bits},
+  {.condition = "clear", .xbm = sunny_bits},
+  {.condition = "cloudy", .xbm = cloudy_bits},
+  {.condition = "flurries", .xbm = flurries_bits},
+  {.condition = "fog", .xbm = fog_bits},
+  {.condition = "hazy", .xbm = fog_bits},
+  {.condition = "mostlycloudy", .xbm = cloudy_bits},
+  {.condition = "mostlysunny", .xbm = mostlysunny_bits},
+  {.condition = "nt_chanceflurries", .xbm = flurries_bits},
+  {.condition = "nt_chancerain", .xbm = chancerain_bits},
+  {.condition = "nt_chancesleet", .xbm = chancesnow_bits},
+  {.condition = "nt_chancesnow", .xbm = chancesnow_bits},
+  {.condition = "nt_chancetstorms", .xbm = chancetstorms_bits},
+  {.condition = "nt_clear", .xbm = nt_clear_bits},
+  {.condition = "nt_cloudy", .xbm = cloudy_bits},
+  {.condition = "nt_flurries", .xbm = flurries_bits},
+  {.condition = "nt_fog", .xbm = fog_bits},
+  {.condition = "nt_hazy", .xbm = fog_bits},
+  {.condition = "nt_mostlycloudy", .xbm = cloudy_bits},
+  {.condition = "nt_mostlysunny", .xbm = mostlysunny_bits},
+  {.condition = "nt_partlycloudy", .xbm = nt_partlycloudy_bits},
+  {.condition = "nt_partlysunny", .xbm = nt_partlycloudy_bits},
+  {.condition = "nt_rain", .xbm = rain_bits},
+  {.condition = "nt_sleet", .xbm = snow_bits},
+  {.condition = "nt_snow", .xbm = snow_bits},
+  {.condition = "nt_sunny", .xbm = nt_clear_bits},
+  {.condition = "nt_tstorms", .xbm = tstorms_bits},
+  {.condition = "partlycloudy", .xbm = mostlysunny_bits},
+  {.condition = "partlysunny", .xbm = mostlysunny_bits},
+  {.condition = "rain", .xbm = rain_bits},
+  {.condition = "sleet", .xbm = snow_bits},
+  {.condition = "snow", .xbm = snow_bits},
+  {.condition = "sunny", .xbm = sunny_bits},
+  {.condition = "tstorms", .xbm = tstorms_bits},
+};
+
+
+
 
 void WiFiWorker::sendNTPpacket(IPAddress &address) {
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
@@ -135,6 +186,11 @@ void WiFiWorker::value(String value) {
       // Serial.println("substr" + value.substring(startIndex + 1));
       lastWeatherCondition.condition = value.substring(startIndex + 1);
       Serial.println(lastWeatherCondition.condition);
+
+      String url = value.substring(startIndex + 1);
+
+
+
     }
   } else if (currentKey == "pressure_in") {
     lastWeatherCondition.pressure = value.toFloat() * 25.4; // ??
