@@ -29,7 +29,10 @@ public:
   void showTimeScreen(String currentTime, String currentDate);
   void showNYRemainTime(String remainingTime);
   void showIndoorData(String currentTemperature, String currentPressure);
-  void showWeatherData(String icon, String temperature, String pressure);
+
+  void showWeatherData(WeatherState weather);
+  void showForecastData(WeatherState weather[]);
+
   void showConfigData(String apName);
 
   void showCurrentWeather();

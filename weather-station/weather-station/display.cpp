@@ -63,21 +63,33 @@ void Display::showIndoorData(String currentTemperature, String currentPressure) 
   u8g2.sendBuffer();
 }
 
-void Display::showWeatherData(String icon, String temperature, String pressure) {
+void Display::showWeatherData(WeatherState weather) {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_unifont_t_cyrillic);
 
   int numberOfItems = sizeof(states) / sizeof(IconState);
   for (int x = 0; x < numberOfItems; x++) {
     const IconState state = states[x];
-    if (icon == state.icon) {
+    if (weather.condition == state.icon) {
       u8g2.drawXBMP(0, 0, 64, 64, state.xbm);
     }
   }
+  String formattedStr = String(weather.temperature) + "C";
+  u8g2.drawStr(50, 25, formattedStr.c_str());
+  formattedStr = String(weather.pressure) + "mm.";
+   u8g2.drawStr(50, 45, formattedStr.c_str());
 
-  u8g2.drawStr(50, 25, temperature.c_str());
-  u8g2.drawStr(50, 45, pressure.c_str());
+  u8g2.sendBuffer();
+}
 
+void Display::showForecastData(WeatherState weather[]) {
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_unifont_t_cyrillic);
+
+  for (int x = 0; x < 3; x++) {
+    WeatherState state = weather[x];
+
+  }
   u8g2.sendBuffer();
 }
 

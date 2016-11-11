@@ -26,6 +26,7 @@ void showTimeScreen();
 void showTemperatureScreen();
 void showNYRemainTime();
 void showCurrentWeatherCondition();
+void showForecast();
 void configModeCallback (WiFiManager *myWiFiManager);
 
 typedef struct Screen {
@@ -206,7 +207,11 @@ void showTemperatureScreen() {
 
 void showCurrentWeatherCondition() {
   WeatherState s = worker->getCurrentState();
-  display->showWeatherData(s.condition, String(s.temperature) + "C", String(s.pressure) + "mm.");
+  display->showWeatherData(worker->getCurrentState());
+}
+
+void showForecast() {
+  display->showForecastData(worker->getForecast());
 }
 
 void configModeCallback (WiFiManager *myWiFiManager) {

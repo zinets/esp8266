@@ -19,6 +19,7 @@ private:
   WiFiUDP *udp;
 
   WeatherState lastWeatherCondition;
+  WeatherState forecast[3];
 
   String currentKey;
 
@@ -32,6 +33,7 @@ public:
 
   // getters
   WeatherState getCurrentState();
+  WeatherState * getForecast();
 
   // listener
   virtual void whitespace(char c);

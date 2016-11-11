@@ -167,3 +167,7 @@ void WiFiWorker::startObject() {
 WeatherState WiFiWorker::getCurrentState() {
   return lastWeatherCondition;
 }
+
+WeatherState * WiFiWorker::getForecast() {
+  return &forecast[0];
+}

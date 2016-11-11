@@ -17,7 +17,7 @@ typedef struct WeatherState {
   bool ready;
   String condition;
   float temperature;
+  float maxTemperature;
+  float minTemperature;
   float pressure;
-
-
 } WeatherState;
