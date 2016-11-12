@@ -1,6 +1,28 @@
 #include "wifiWorker.h"
 
-void WiFiWorker::sendNTPpacket(IPAddress &address) {
+time_t WiFiWorker::getNtpTime(int timeZone) {
+  const int NTP_PACKET_SIZE = 48;
+  const char* timerServerDNSName = "0.europe.pool.ntp.org";
+  const unsigned int localPort = 8888;
+
+  byte packetBuffer[NTP_PACKET_SIZE];
+  IPAddress timeServer;
+  WiFiUDP udp;
+
+  time_t result = 0;
+  WiFi.hostByName(timerServerDNSName, timeServer);
+  // Serial.print("Time server IP: ");
+  // Serial.println(timeServer.toString());
+
+  // udp = new WiFiUDP();
+  udp.begin(localPort);
+  // Serial.print("UDP local port: ");
+  // Serial.println(udp.localPort());
+
+  while (udp.parsePacket() > 0) ; // discard any previously received packets
+  // Serial.println("Transmit NTP request");
+
+  // sendNTPpacket(timeServer);
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
   packetBuffer[0] = 0b11100011; // LI, Version, Mode
   packetBuffer[1] = 0;          // Stratum, or type of clock
@@ -13,31 +35,16 @@ void WiFiWorker::sendNTPpacket(IPAddress &address) {
   packetBuffer[15]  = 52;
 
 
-  udp->beginPacket(address, 123);
-  udp->write(packetBuffer, NTP_PACKET_SIZE);
-  udp->endPacket();
-}
+  udp.beginPacket(timeServer, 123);
+  udp.write(packetBuffer, NTP_PACKET_SIZE);
+  udp.endPacket();
 
-time_t WiFiWorker::getNtpTime(int timeZone) {
-  time_t result = 0;
-  WiFi.hostByName(timerServerDNSName, timeServer);
-  // Serial.print("Time server IP: ");
-  // Serial.println(timeServer.toString());
-
-  udp = new WiFiUDP();
-  udp->begin(localPort);
-  // Serial.print("UDP local port: ");
-  // Serial.println(udp.localPort());
-
-  while (udp->parsePacket() > 0) ; // discard any previously received packets
-  // Serial.println("Transmit NTP request");
-  sendNTPpacket(timeServer);
   uint32_t beginWait = millis();
   while (millis() - beginWait < 1500) {
-    int size = udp->parsePacket();
+    int size = udp.parsePacket();
     if (size >= NTP_PACKET_SIZE) {
       // Serial.println("Receive NTP response");
-      udp->read(packetBuffer, NTP_PACKET_SIZE);
+      udp.read(packetBuffer, NTP_PACKET_SIZE);
       unsigned long secsSince1900;
       // convert four bytes starting at location 40 to a long integer
       secsSince1900 =  (unsigned long)packetBuffer[40] << 24;
@@ -50,7 +57,6 @@ time_t WiFiWorker::getNtpTime(int timeZone) {
       // Serial.println("result - " + String(result));
       // Serial.println("result - " + String(secsSince1900 - 2208988800UL));
       Serial.println("NTP time received");
-
       break;
     }
   }

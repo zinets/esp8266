@@ -7,22 +7,12 @@
 
 #include "weather-defines.h"
 
-const int NTP_PACKET_SIZE = 48;
-
 class WiFiWorker : public JsonListener {
 private:
-  const char* timerServerDNSName = "0.europe.pool.ntp.org";
-  const unsigned int localPort = 8888;
-
-  byte packetBuffer[NTP_PACKET_SIZE];
-  IPAddress timeServer;
-  WiFiUDP *udp;
-
   WeatherState lastWeatherCondition;
 
   String currentKey;
 
-  void sendNTPpacket(IPAddress &address);
   void parseUrl(String url);
 public:
   // updates
