@@ -24,9 +24,9 @@ void Barometer::adjustData() {
 }
 
 String Barometer::getPressure() {
-  return String(pressure * 0.75006) + " mm";
+  return String(round(pressure * 0.75006)) + " mm";
 }
 
 String Barometer::getTemperature() {
-  return String(temperature) + " C";
+  return String(round(temperature)) + " C";
 }
