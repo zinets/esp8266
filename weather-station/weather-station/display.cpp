@@ -64,16 +64,15 @@ Display::Display() {
 
 void Display::showTimeScreen(String currentTime, String currentDate) {
   u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_inb24_mr);
-
+  u8g2.setFont(u8g2_font_profont29_mn);
   const char *str = currentTime.c_str();
   int w = u8g2.getStrWidth(str);
   u8g2.drawStr((128 - w) / 2, 30, str);
 
-  u8g2.setFont(u8g2_font_7x14_mf);
+  u8g2.setFont(u8g2_font_timR12_tr);
   str = currentDate.c_str();
   w = u8g2.getStrWidth(str);
-  u8g2.drawStr((128 - w) / 2, 60, str);
+  u8g2.drawStr((128 - w) / 2, 58, str);
 
   u8g2.sendBuffer();
 }
@@ -81,8 +80,8 @@ void Display::showTimeScreen(String currentTime, String currentDate) {
 void Display::setWeather(WeatherState newState) {
   currentWeatherState = newState;
 
-  temperatures[0] = String(currentWeatherState.temperature) + " C";
-  pressures[0] = String(currentWeatherState.pressure) + " mm";
+  temperatures[0] = String(round(currentWeatherState.temperature)) + " C";
+  pressures[0] = String(round(currentWeatherState.pressure)) + " mm";
 }
 
 void Display::showCurrentWeather() {
@@ -99,9 +98,9 @@ void Display::showCurrentWeather() {
     }
   }
 
-  u8g2.setFont(u8g2_font_unifont_t_cyrillic);
-  u8g2.drawStr(50, 25, temperatures[0].c_str());
-  u8g2.drawStr(50, 45, pressures[0].c_str());
+  u8g2.setFont(u8g2_font_logisoso26_tr);
+  u8g2.drawStr(64, 25, temperatures[0].c_str());
+  u8g2.drawStr(64, 61, pressures[0].c_str());
 
   u8g2.sendBuffer();
 }
@@ -117,11 +116,12 @@ void Display::showNYRemainTime(String remainingTime) {
 
 void Display::showIndoorData(String currentTemperature, String currentPressure) {
   u8g2.clearBuffer();
-  u8g2.drawXBMP(0, 2, temperature_width, temperature_height, temperature_bits);
+  u8g2.drawXBMP(7, 2, temperature_width, temperature_height, temperature_bits);
 
-  u8g2.setFont(u8g2_font_unifont_t_cyrillic);
-  u8g2.drawStr(50, 25, currentTemperature.c_str());
-  u8g2.drawStr(50, 45, currentPressure.c_str());
+  u8g2.setFont(u8g2_font_logisoso26_tr);
+  u8g2.drawStr(42, 29, currentTemperature.c_str());
+  u8g2.setFont(u8g2_font_logisoso16_tr);
+  u8g2.drawStr(42, 57, currentPressure.c_str());
 
   u8g2.sendBuffer();
 }
