@@ -87,7 +87,24 @@ void Display::showTimeScreen(String currentTime, String currentDate) {
 
 void Display::showCurrentWeather() {
   u8g2.clearBuffer();
-  u8g2.drawXBMP(0, 0, 64, 64, tstorms_bits);
+
+  int nums = sizeof(states) / sizeof(IconState);
+  // Serial.println("nums = " + String(nums));
+  for (int x = 0; x < nums; x++) {
+    IconState state = states[x];
+    if (state.condition == currentWeatherState.condition) {
+      // Serial.println("state = " + state.condition);
+      u8g2.drawXBMP(0, 0, 64, 64, state.xbm);
+      break;
+    }
+  }
+
+  u8g2.setFont(u8g2_font_unifont_t_cyrillic);
+  String txt = String(currentWeatherState.temperature) + " C";
+  u8g2.drawStr(50, 25, txt.c_str());
+  txt = String(currentWeatherState.pressure) + " mm";
+  u8g2.drawStr(50, 45, txt.c_str());
+
   u8g2.sendBuffer();
 }
 
@@ -105,17 +122,6 @@ void Display::showIndoorData(String currentTemperature, String currentPressure) 
   u8g2.setFont(u8g2_font_unifont_t_cyrillic);
   u8g2.drawStr(50, 25, currentTemperature.c_str());
   u8g2.drawStr(50, 45, currentPressure.c_str());
-
-  u8g2.sendBuffer();
-}
-
-void Display::showWeatherData(String icon, String temperature, String pressure) {
-  u8g2.clearBuffer();
-  u8g2.drawXBMP(0, 2, 64, 64, tstorms_bits);
-
-  u8g2.setFont(u8g2_font_unifont_t_cyrillic);
-  u8g2.drawStr(50, 25, temperature.c_str());
-  u8g2.drawStr(50, 45, pressure.c_str());
 
   u8g2.sendBuffer();
 }
