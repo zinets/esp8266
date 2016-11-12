@@ -104,6 +104,7 @@ void connectToWiFi() {
   if (wifiManager.autoConnect()) {
     flags.isWiFiconnected = true;
     flags.shouldUpdateTime = true;
+    Serial.println("wifi connected");
   } else {
     Serial.println("failed to connect and hit timeout");
 

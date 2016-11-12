@@ -39,12 +39,6 @@ void Display::showTimeScreen(String currentTime, String currentDate) {
   u8g2.sendBuffer();
 }
 
-void Display::showCurrentWeather() {
-  u8g2.clearBuffer();
-  u8g2.drawXBMP(0, 0, 64, 64, tstorms_bits);
-  u8g2.sendBuffer();
-}
-
 void Display::showNYRemainTime(String remainingTime) {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_ncenB14_tr);

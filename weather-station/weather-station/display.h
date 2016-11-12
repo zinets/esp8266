@@ -34,10 +34,4 @@ public:
   void showForecastData(WeatherState weather[]);
 
   void showConfigData(String apName);
-
-  void showCurrentWeather();
-  void showIndorState();
-
-  // forecast
-  // NY remaining
 };
