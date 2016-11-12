@@ -85,6 +85,13 @@ void Display::showTimeScreen(String currentTime, String currentDate) {
   u8g2.sendBuffer();
 }
 
+void Display::setWeather(WeatherState newState) {
+  currentWeatherState = newState;
+
+  temperatures[0] = String(currentWeatherState.temperature) + " C";
+  pressures[0] = String(currentWeatherState.pressure) + " mm";
+}
+
 void Display::showCurrentWeather() {
   u8g2.clearBuffer();
 
@@ -100,10 +107,8 @@ void Display::showCurrentWeather() {
   }
 
   u8g2.setFont(u8g2_font_unifont_t_cyrillic);
-  String txt = String(currentWeatherState.temperature) + " C";
-  u8g2.drawStr(50, 25, txt.c_str());
-  txt = String(currentWeatherState.pressure) + " mm";
-  u8g2.drawStr(50, 45, txt.c_str());
+  u8g2.drawStr(50, 25, temperatures[0].c_str());
+  u8g2.drawStr(50, 45, pressures[0].c_str());
 
   u8g2.sendBuffer();
 }
