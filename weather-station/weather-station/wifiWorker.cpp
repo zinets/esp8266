@@ -14,15 +14,13 @@ time_t WiFiWorker::getNtpTime(int timeZone) {
   // Serial.print("Time server IP: ");
   // Serial.println(timeServer.toString());
 
-  // udp = new WiFiUDP();
   udp.begin(localPort);
   // Serial.print("UDP local port: ");
   // Serial.println(udp.localPort());
 
-  while (udp.parsePacket() > 0) ; // discard any previously received packets
+  while (udp.parsePacket() > 0);
   // Serial.println("Transmit NTP request");
 
-  // sendNTPpacket(timeServer);
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
   packetBuffer[0] = 0b11100011; // LI, Version, Mode
   packetBuffer[1] = 0;          // Stratum, or type of clock
@@ -33,7 +31,6 @@ time_t WiFiWorker::getNtpTime(int timeZone) {
   packetBuffer[13]  = 0x4E;
   packetBuffer[14]  = 49;
   packetBuffer[15]  = 52;
-
 
   udp.beginPacket(timeServer, 123);
   udp.write(packetBuffer, NTP_PACKET_SIZE);
