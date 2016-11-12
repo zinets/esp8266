@@ -73,15 +73,15 @@ String Clock::getNYRemainingTime() {
   if (d.days() > 60) {
     return "";
   }
-
-  if (d.days() > 1) {
-    return String(d.days()) + " days";
-  }
-  if (d.hours() > 1) {
-    return String(d.hours()) + " hours";
-  }
-  if (d.minutes() >= 1) {
-    return String(d.minutes()) + " minutes";
-  }
-  return "Less then one minute";
+  return String(d.days());
+  // if (d.days() > 1) {
+  //   return String(d.days()) + " days";
+  // }
+  // if (d.hours() > 1) {
+  //   return String(d.hours()) + " hours";
+  // }
+  // if (d.minutes() >= 1) {
+  //   return String(d.minutes()) + " minutes";
+  // }
+  // return "Less then one minute";
 }
