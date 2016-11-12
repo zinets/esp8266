@@ -192,10 +192,6 @@ void showTimeScreen() {
   display->showTimeScreen(clock->getTime(), clock->getDate());
 }
 
-void showAnotherScreen() {
-  display->showStartupScreen();
-}
-
 void showNYRemainTime() {
   display->showNYRemainTime(clock->getNYRemainingTime());
 }

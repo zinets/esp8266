@@ -28,7 +28,6 @@ public:
   void setIndoorState(WeatherState newState) {currentIndoorState = newState;};
 
   // screens
-  void showStartupScreen();
   void showTimeScreen(String currentTime, String currentDate);
   void showNYRemainTime(String remainingTime);
   void showIndoorData(String currentTemperature, String currentPressure);

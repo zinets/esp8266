@@ -62,13 +62,6 @@ Display::Display() {
   u8g2.clearBuffer();
 }
 
-void Display::showStartupScreen() {
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_ncenB14_tr);
-  u8g2.drawStr(5, 25, "Starting...");
-  u8g2.sendBuffer();
-}
-
 void Display::showTimeScreen(String currentTime, String currentDate) {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_inb21_mf);
