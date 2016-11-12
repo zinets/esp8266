@@ -186,6 +186,8 @@ void loop() {
   flags.shouldUpdateTime = now > flags.nextUpdateTimeTime;
   flags.shouldUpdateWeather = now > flags.nextUpdateWeatherTime;
   flags.shouldUpdateForecast = now > flags.nextUpdateForecastTime;
+
+  Serial.println(String(ESP.getFreeHeap()));
 }
 
 void showTimeScreen() {
@@ -206,7 +208,8 @@ void showTemperatureScreen() {
 
 void showCurrentWeatherCondition() {
   WeatherState s = worker->getCurrentState();
-  display->showWeatherData(s.condition, String(s.temperature) + "C", String(s.pressure) + "mm.");
+  display->setWeather(s);
+  display->showCurrentWeather();
 }
 
 void configModeCallback (WiFiManager *myWiFiManager) {
