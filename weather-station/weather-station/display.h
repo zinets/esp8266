@@ -15,23 +15,28 @@ class Display {
 private:
   U8G2 u8g2;
 
+  String temperatures[4];
+  String pressures[4];
+
   WeatherState currentWeatherState;
   WeatherState currentIndoorState;
   // WeatherState forecast[3];
 public:
   Display();
 
-  void setWeather(WeatherState newState) {currentWeatherState = newState;};
+  void setWeather(WeatherState newState);
   void setIndoorState(WeatherState newState) {currentIndoorState = newState;};
 
   // screens
-  void showStartupScreen();
   void showTimeScreen(String currentTime, String currentDate);
   void showNYRemainTime(String remainingTime);
   void showIndoorData(String currentTemperature, String currentPressure);
 
-  void showWeatherData(WeatherState weather);
-  void showForecastData(WeatherState weather[]);
-
   void showConfigData(String apName);
+
+  void showCurrentWeather();
+  void showIndorState();
+
+  // forecast
+  // NY remaining
 };
