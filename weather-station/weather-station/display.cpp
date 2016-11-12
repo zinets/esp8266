@@ -64,16 +64,16 @@ Display::Display() {
 
 void Display::showTimeScreen(String currentTime, String currentDate) {
   u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_inb21_mf);
+  u8g2.setFont(u8g2_font_inb24_mr);
 
   const char *str = currentTime.c_str();
   int w = u8g2.getStrWidth(str);
-  u8g2.drawStr((128 - w) / 2, 25, str);
+  u8g2.drawStr((128 - w) / 2, 30, str);
 
   u8g2.setFont(u8g2_font_7x14_mf);
   str = currentDate.c_str();
   w = u8g2.getStrWidth(str);
-  u8g2.drawStr((128 - w) / 2, 50, str);
+  u8g2.drawStr((128 - w) / 2, 60, str);
 
   u8g2.sendBuffer();
 }

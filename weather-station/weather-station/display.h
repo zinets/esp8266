@@ -17,7 +17,7 @@ private:
 
   String temperatures[4];
   String pressures[4];
-  
+
   WeatherState currentWeatherState;
   WeatherState currentIndoorState;
   // WeatherState forecast[3];
