@@ -88,8 +88,6 @@ void setup() {
   barometer = new Barometer();
   worker = new WiFiWorker();
 
-  screens[ScreenTypeNYRemain].enabled = clock->canShowNYRemainTime();
-
   flags.shouldUpdateBaro = true;
   flags.shouldConnectWiFi = true;
 }
