@@ -72,6 +72,8 @@ void WiFiWorker::parseUrl(String url) {
   }
   Serial.print("Requesting URL: ");
   Serial.println(url);
+  Serial.println("->");
+  Serial.println(String(ESP.getFreeHeap()));
 
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: api.wunderground.com\r\n" +
@@ -106,6 +108,8 @@ void WiFiWorker::parseUrl(String url) {
       }
     }
   }
+  Serial.println("<-");
+  Serial.println(String(ESP.getFreeHeap()));
 }
 
 void WiFiWorker::updateWeatherCondition(String apiKey, String query) {
@@ -150,7 +154,7 @@ void WiFiWorker::endObject() {
   // Serial.println("obj end");
 }
 void WiFiWorker::endDocument() {
-  // Serial.println("doc end");
+ Serial.println("doc end");
 }
 void WiFiWorker::startArray() {
   // Serial.println("arr start");
