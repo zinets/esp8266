@@ -93,14 +93,14 @@ void Display::showCurrentWeather() {
     IconState state = states[x];
     if (state.condition == currentWeatherState.condition) {
       // Serial.println("state = " + state.condition);
-      u8g2.drawXBMP(0, 0, 64, 64, state.xbm);
+      u8g2.drawXBMP(0, 3, 58, 58, state.xbm);
       break;
     }
   }
 
   u8g2.setFont(u8g2_font_logisoso26_tr);
-  u8g2.drawStr(64, 25, temperatures[0].c_str());
-  u8g2.drawStr(64, 61, pressures[0].c_str());
+  u8g2.drawStr(58, 45, temperatures[0].c_str());
+  // u8g2.drawStr(64, 61, pressures[0].c_str());
 
   u8g2.sendBuffer();
 }
