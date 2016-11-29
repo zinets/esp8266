@@ -185,7 +185,7 @@ void loop() {
   flags.shouldUpdateWeather = now > flags.nextUpdateWeatherTime;
   flags.shouldUpdateForecast = now > flags.nextUpdateForecastTime;
 
-  Serial.println(":" + String(ESP.getFreeHeap()));
+  // Serial.println(":" + String(ESP.getFreeHeap()));
 }
 
 void showTimeScreen() {
