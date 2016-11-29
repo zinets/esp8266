@@ -107,10 +107,10 @@ void Display::showCurrentWeather() {
 
 void Display::showNYRemainTime(String remainingTime) {
   u8g2.clearBuffer();
-  u8g2.drawXBMP(0, 0, 64, 64, xtree_bits);
+  u8g2.drawXBMP(2, 0, 46, 64, xtree_bits);
   u8g2.setFont(u8g2_font_inr42_mn);
   const char *str = remainingTime.c_str();
-  u8g2.drawStr(64 + (64 - u8g2.getStrWidth(str)) / 2, 53, str);
+  u8g2.drawStr(50 + (128 - 50 - u8g2.getStrWidth(str)) / 2, 53, str);
   u8g2.sendBuffer();
 }
 

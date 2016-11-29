@@ -43,7 +43,7 @@ enum ScreenType {
 
 int const numberOfScreens = 4;
 Screen screens[numberOfScreens] = {
-  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 4, .enabled = true},
+  /* ScreenTypeTime */        {.displayFunc = showTimeScreen, .timeout = 6, .enabled = true},
   /* ScreenTypeNYRemain */    {.displayFunc = showNYRemainTime, .timeout = 3, .enabled = true},
   /* ScreenTypeIndoorData */  {.displayFunc = showTemperatureScreen, .timeout = 3, .enabled = false},
   /* ScreenTypeWeather */     {.displayFunc = showCurrentWeatherCondition, .timeout = 3, .enabled = false},
