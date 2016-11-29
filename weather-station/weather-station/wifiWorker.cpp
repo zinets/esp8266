@@ -1,5 +1,7 @@
 #include "wifiWorker.h"
 
+#define ABS_ZERO -273.0
+
 time_t WiFiWorker::getNtpTime(int timeZone) {
   const int NTP_PACKET_SIZE = 48;
   const char* timerServerDNSName = "0.europe.pool.ntp.org";
@@ -72,8 +74,8 @@ void WiFiWorker::parseUrl(String url) {
   }
   Serial.print("Requesting URL: ");
   Serial.println(url);
-  Serial.println("->");
-  Serial.println(String(ESP.getFreeHeap()));
+  // Serial.println("->");
+  // Serial.println(String(ESP.getFreeHeap()));
 
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: api.wunderground.com\r\n" +
@@ -94,6 +96,8 @@ void WiFiWorker::parseUrl(String url) {
   int pos = 0;
   boolean isBody = false;
   char c;
+  lastWeatherCondition.ready = false;
+  lastWeatherCondition.temperature = ABS_ZERO;
 
   int size = 0;
   client.setNoDelay(false);
@@ -108,8 +112,8 @@ void WiFiWorker::parseUrl(String url) {
       }
     }
   }
-  Serial.println("<-");
-  Serial.println(String(ESP.getFreeHeap()));
+  // Serial.println("<-");
+  // Serial.println(String(ESP.getFreeHeap()));
 }
 
 void WiFiWorker::updateWeatherCondition(String apiKey, String query) {
@@ -130,7 +134,9 @@ void WiFiWorker::key(String key) {
   // Serial.println("key = " + key);
   currentKey = key;
 }
+
 void WiFiWorker::value(String value) {
+  // Serial.println("val = " + value);
   if (currentKey == "temp_c") {
     lastWeatherCondition.temperature = value.toFloat();
   } else if (currentKey == "icon_url") {
@@ -143,7 +149,7 @@ void WiFiWorker::value(String value) {
   } else if (currentKey == "pressure_in") {
     lastWeatherCondition.pressure = value.toFloat() * 25.4; // ??
   }
-  lastWeatherCondition.ready = lastWeatherCondition.temperature > 0 &&
+  lastWeatherCondition.ready = lastWeatherCondition.temperature > ABS_ZERO &&
   lastWeatherCondition.pressure > 0 &&
   lastWeatherCondition.condition.length() > 0;
 }
@@ -164,5 +170,6 @@ void WiFiWorker::startObject() {
 }
 
 WeatherState WiFiWorker::getCurrentState() {
+  // Serial.print("curent state ready" + String(lastWeatherCondition.ready));
   return lastWeatherCondition;
 }
