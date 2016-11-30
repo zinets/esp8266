@@ -96,6 +96,7 @@ void WiFiWorker::parseUrl(String url) {
   int pos = 0;
   boolean isBody = false;
   char c;
+  Serial.println("prepare to parse..");
   lastWeatherCondition.ready = false;
   lastWeatherCondition.temperature = ABS_ZERO;
 
@@ -136,17 +137,19 @@ void WiFiWorker::key(String key) {
 }
 
 void WiFiWorker::value(String value) {
-  // Serial.println("val = " + value);
   if (currentKey == "temp_c") {
+    Serial.println("val = " + value);
     lastWeatherCondition.temperature = value.toFloat();
   } else if (currentKey == "icon_url") {
     // Serial.println(value);
     int startIndex = value.lastIndexOf("/");
     int endIndex = value.indexOf(".gif");
+    Serial.println("val = " + value);
     if (startIndex > -1 && endIndex > -1) {
       lastWeatherCondition.condition = value.substring(startIndex + 1, endIndex);
     }
   } else if (currentKey == "pressure_in") {
+    Serial.println("val = " + value);
     lastWeatherCondition.pressure = value.toFloat() * 25.4; // ??
   }
   lastWeatherCondition.ready = lastWeatherCondition.temperature > ABS_ZERO &&

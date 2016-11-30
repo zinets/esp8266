@@ -58,9 +58,9 @@ int currentScreenIndex = 0;
 #define UPDATE_BARO_PERIOD (1 * 60 * 1000)
 // период обновления времени в часах
 #define UPDATE_TIME_PERIOD (1 * 60 * 60 * 1000)
-// период обновления погоды
-#define UPDATE_WEATHER_PERIOD (1 * 60 * 60 * 1000)
-// период обновления прогноза
+// период обновления погоды (30 min)
+#define UPDATE_WEATHER_PERIOD (30 * 60 * 1000)
+// период обновления прогноза (10 hours)
 #define UPDATE_FORECAST_PERIOD (10 * 60 * 60 * 1000)
 
 typedef struct FLAGS {
