@@ -15,7 +15,7 @@ private:
 public:
   // updates
   time_t getNtpTime(int timeZone);
-  void updateWeatherCondition(String apiKey, String query);
+  bool updateWeatherCondition(String apiKey, String query);
   void updateAstronomy(String apiKey, String query);
 
   // getters

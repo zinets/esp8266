@@ -66,11 +66,11 @@ time_t WiFiWorker::getNtpTime(int timeZone) {
   return result;
 }
 
-void WiFiWorker::parseUrl(String url) {
+bool WiFiWorker::parseUrl(String url) {
   WiFiClient client;
   if (!client.connect("api.wunderground.com", 80)) {
     Serial.println("connection failed");
-    return;
+    return false;
   }
   Serial.print("Requesting URL: ");
   Serial.println(url);
@@ -86,7 +86,8 @@ void WiFiWorker::parseUrl(String url) {
     retryCounter++;
     if (retryCounter > 10) {
       Serial.print("Connection timeout");
-      return;
+      client.stop();
+      return false;
     }
   }
 
@@ -96,14 +97,13 @@ void WiFiWorker::parseUrl(String url) {
   int pos = 0;
   boolean isBody = false;
   char c;
-  Serial.println("prepare to parse..");
   lastWeatherCondition.ready = false;
   lastWeatherCondition.temperature = ABS_ZERO;
 
   int size = 0;
   client.setNoDelay(false);
-  while(client.connected()) {
-    while((size = client.available()) > 0) {
+  while (client.connected()) {
+    while ((size = client.available()) > 0) {
       c = client.read();
       if (c == '{' || c == '[') {
         isBody = true;
@@ -113,13 +113,15 @@ void WiFiWorker::parseUrl(String url) {
       }
     }
   }
+  client.stop();
   // Serial.println("<-");
   // Serial.println(String(ESP.getFreeHeap()));
+  return true;
 }
 
-void WiFiWorker::updateWeatherCondition(String apiKey, String query) {
+bool WiFiWorker::updateWeatherCondition(String apiKey, String query) {
   String q = "/api/" + apiKey + "/conditions/q/" + query + ".json";
-  parseUrl(q);
+  retrun parseUrl(q);
 }
 
 void WiFiWorker::updateAstronomy(String apiKey, String query) {
@@ -137,19 +139,17 @@ void WiFiWorker::key(String key) {
 }
 
 void WiFiWorker::value(String value) {
+  // Serial.println("val = " + value);
   if (currentKey == "temp_c") {
-    Serial.println("val = " + value);
     lastWeatherCondition.temperature = value.toFloat();
   } else if (currentKey == "icon_url") {
     // Serial.println(value);
     int startIndex = value.lastIndexOf("/");
     int endIndex = value.indexOf(".gif");
-    Serial.println("val = " + value);
     if (startIndex > -1 && endIndex > -1) {
       lastWeatherCondition.condition = value.substring(startIndex + 1, endIndex);
     }
   } else if (currentKey == "pressure_in") {
-    Serial.println("val = " + value);
     lastWeatherCondition.pressure = value.toFloat() * 25.4; // ??
   }
   lastWeatherCondition.ready = lastWeatherCondition.temperature > ABS_ZERO &&
