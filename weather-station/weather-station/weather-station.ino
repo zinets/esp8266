@@ -148,7 +148,10 @@ void loop() {
   } else if (flags.shouldUpdateTime) {
     updateTime();
   } else if (flags.shouldUpdateWeather) {
-    updateWeather();
+    if (!updateWeather()) {
+      flags.nextUpdateWeatherTime = millis() + 60 * 1000;
+      Serial.println("Shedule updating");
+    }
   } else if (flags.shouldUpdateForecast) {
     updateForecast();
   }
@@ -182,7 +185,7 @@ void loop() {
   unsigned long now = millis();
   flags.shouldUpdateBaro = now > flags.nextUpdateBaroTime;
   flags.shouldUpdateTime = now > flags.nextUpdateTimeTime;
-  flags.shouldUpdateWeather = now > flags.nextUpdateWeatherTime;
+  flags.shouldUpdateWeather = now > flags.nextUpdateWeatherTime || !worker->getCurrentState().ready;
   flags.shouldUpdateForecast = now > flags.nextUpdateForecastTime;
 
   // Serial.println(":" + String(ESP.getFreeHeap()));
