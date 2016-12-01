@@ -121,7 +121,7 @@ bool WiFiWorker::parseUrl(String url) {
 
 bool WiFiWorker::updateWeatherCondition(String apiKey, String query) {
   String q = "/api/" + apiKey + "/conditions/q/" + query + ".json";
-  retrun parseUrl(q);
+  return parseUrl(q);
 }
 
 void WiFiWorker::updateAstronomy(String apiKey, String query) {

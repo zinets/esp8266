@@ -63,6 +63,9 @@ int currentScreenIndex = 0;
 // период обновления прогноза (10 hours)
 #define UPDATE_FORECAST_PERIOD (10 * 60 * 60 * 1000)
 
+int updateCount = 0; // счетчик попыток обновления погоды
+int updateTimeouts[3] = {10 * 1000, 60 * 1000, UPDATE_WEATHER_PERIOD};
+
 typedef struct FLAGS {
   unsigned char isWiFiconnected: 1;
 
@@ -125,10 +128,15 @@ void updateTime() {
 }
 
 void updateWeather() {
-  worker->updateWeatherCondition(API_KEY, LOCATION);
-
   flags.shouldUpdateWeather = false;
-  flags.nextUpdateWeatherTime = millis() + UPDATE_WEATHER_PERIOD;
+  if (worker->updateWeatherCondition(API_KEY, LOCATION)) {
+    Serial.println("Weather updated succ");
+    flags.nextUpdateWeatherTime = millis() + UPDATE_WEATHER_PERIOD;
+  } else {
+    flags.nextUpdateWeatherTime = millis() + updateTimeouts[updateCount++];
+    Serial.println("Weather didn't updated, shedule updating (" + String(updateCount) +" attempt)");
+    updateCount = updateCount % 3;
+  }
 }
 
 void updateForecast() {
@@ -148,10 +156,7 @@ void loop() {
   } else if (flags.shouldUpdateTime) {
     updateTime();
   } else if (flags.shouldUpdateWeather) {
-    if (!updateWeather()) {
-      flags.nextUpdateWeatherTime = millis() + 60 * 1000;
-      Serial.println("Shedule updating");
-    }
+    updateWeather();
   } else if (flags.shouldUpdateForecast) {
     updateForecast();
   }

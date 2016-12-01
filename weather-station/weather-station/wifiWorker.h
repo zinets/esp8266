@@ -11,7 +11,7 @@ class WiFiWorker : public JsonListener {
 private:
   WeatherState lastWeatherCondition;
   String currentKey;
-  void parseUrl(String url);
+  bool parseUrl(String url);
 public:
   // updates
   time_t getNtpTime(int timeZone);
