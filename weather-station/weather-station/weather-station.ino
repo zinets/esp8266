@@ -132,6 +132,7 @@ void updateWeather() {
   if (worker->updateWeatherCondition(API_KEY, LOCATION)) {
     Serial.println("Weather updated succ");
     flags.nextUpdateWeatherTime = millis() + UPDATE_WEATHER_PERIOD;
+    updateCount = 0;
   } else {
     flags.nextUpdateWeatherTime = millis() + updateTimeouts[updateCount++];
     Serial.println("Weather didn't updated, shedule updating (" + String(updateCount) +" attempt)");
