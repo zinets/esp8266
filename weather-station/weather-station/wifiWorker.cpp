@@ -121,6 +121,15 @@ bool WiFiWorker::parseUrl(String url) {
 
 bool WiFiWorker::updateWeatherCondition(String apiKey, String query) {
   String q = "/api/" + apiKey + "/conditions/q/" + query + ".json";
+  gettingForecast = false;
+  return parseUrl(q);
+}
+
+bool updateForecast(String apiKey, String query) {
+  String q = "/api/" + apiKey + "/forecast/q/" + query + ".json";
+  dayIndex = 0;
+  forecastBegan = false;
+  gettingForecast = true;
   return parseUrl(q);
 }
 
@@ -133,9 +142,22 @@ void WiFiWorker::whitespace(char c) {}
 void WiFiWorker::startDocument() {
   // Serial.println("start..");
 }
+
+void WundergroundClient::startObject() {
+  currentParent = currentKey;
+}
+
+void WundergroundClient::endObject() {
+  currentParent = "";
+}
+
 void WiFiWorker::key(String key) {
   // Serial.println("key = " + key);
   currentKey = key;
+
+  if (key == "simpleforecast") {
+    forecastBegan = true;
+  }
 }
 
 void WiFiWorker::value(String value) {
@@ -151,14 +173,28 @@ void WiFiWorker::value(String value) {
   //     lastWeatherCondition.condition = value.substring(startIndex + 1, endIndex);
   //   }
   } if (currentKey == "icon") {
-    lastWeatherCondition.condition = value;
+    if (gettingForecast) {
+
+    } else {
+      lastWeatherCondition.condition = value;
+    }
   } else if (currentKey == "pressure_in") {
     lastWeatherCondition.pressure = value.toFloat() * 25.4; // ??
+  } else if (currentKey == "celsius") {
+    if (currentParent == "high") {
+
+    } else if (currentParent == "low") {
+
+    }
   }
+
+
+
   lastWeatherCondition.ready = lastWeatherCondition.temperature > ABS_ZERO &&
   lastWeatherCondition.pressure > 0 &&
   lastWeatherCondition.condition.length() > 0;
 }
+
 void WiFiWorker::endArray() {
   // Serial.println("arr end");
 }

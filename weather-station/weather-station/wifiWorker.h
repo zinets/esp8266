@@ -11,11 +11,16 @@ class WiFiWorker : public JsonListener {
 private:
   WeatherState lastWeatherCondition;
   String currentKey;
+  String currentParent;
+  bool gettingForecast;
+  bool forecastBegan;
   bool parseUrl(String url);
+  int dayIndex;
 public:
   // updates
   time_t getNtpTime(int timeZone);
   bool updateWeatherCondition(String apiKey, String query);
+  bool updateForecast(String apiKey, String query);
   void updateAstronomy(String apiKey, String query);
 
   // getters
