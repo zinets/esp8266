@@ -142,13 +142,16 @@ void WiFiWorker::value(String value) {
   // Serial.println("val = " + value);
   if (currentKey == "temp_c") {
     lastWeatherCondition.temperature = value.toFloat();
-  } else if (currentKey == "icon_url") {
-    // Serial.println(value);
-    int startIndex = value.lastIndexOf("/");
-    int endIndex = value.indexOf(".gif");
-    if (startIndex > -1 && endIndex > -1) {
-      lastWeatherCondition.condition = value.substring(startIndex + 1, endIndex);
-    }
+    // мне кажется поле icon содержит уже нужное значение и нет смысла вырезать его из урла
+  // } else if (currentKey == "icon_url") {
+  //   // Serial.println(value);
+  //   int startIndex = value.lastIndexOf("/");
+  //   int endIndex = value.indexOf(".gif");
+  //   if (startIndex > -1 && endIndex > -1) {
+  //     lastWeatherCondition.condition = value.substring(startIndex + 1, endIndex);
+  //   }
+  } if (currentKey == "icon") {
+    lastWeatherCondition.condition = value;
   } else if (currentKey == "pressure_in") {
     lastWeatherCondition.pressure = value.toFloat() * 25.4; // ??
   }
