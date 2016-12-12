@@ -99,7 +99,8 @@ void Display::showCurrentWeather() {
   }
 
   u8g2.setFont(u8g2_font_logisoso26_tr);
-  u8g2.drawStr(58, 45, temperatures[0].c_str());
+  // небольшой отступ от картинки; можно предусмотреть адаптацию под "длинную" температуру
+  u8g2.drawStr(61, 45, temperatures[0].c_str());
   // u8g2.drawStr(64, 61, pressures[0].c_str());
 
   u8g2.sendBuffer();
