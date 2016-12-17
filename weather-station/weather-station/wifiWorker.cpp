@@ -126,11 +126,12 @@ bool WiFiWorker::updateWeatherCondition(String apiKey, String query) {
 }
 
 bool updateForecast(String apiKey, String query) {
-  String q = "/api/" + apiKey + "/forecast/q/" + query + ".json";
-  dayIndex = 0;
-  forecastBegan = false;
-  gettingForecast = true;
-  return parseUrl(q);
+  // String q = "/api/" + apiKey + "/forecast/q/" + query + ".json";
+  // dayIndex = 0;
+  // forecastBegan = false;
+  // gettingForecast = true;
+  // return parseUrl(q);
+  return 0;
 }
 
 void WiFiWorker::updateAstronomy(String apiKey, String query) {
@@ -143,11 +144,11 @@ void WiFiWorker::startDocument() {
   // Serial.println("start..");
 }
 
-void WundergroundClient::startObject() {
+void WiFiWorker::startObject() {
   currentParent = currentKey;
 }
 
-void WundergroundClient::endObject() {
+void WiFiWorker::endObject() {
   currentParent = "";
 }
 
@@ -198,17 +199,13 @@ void WiFiWorker::value(String value) {
 void WiFiWorker::endArray() {
   // Serial.println("arr end");
 }
-void WiFiWorker::endObject() {
-  // Serial.println("obj end");
-}
+
 void WiFiWorker::endDocument() {
  Serial.println("doc end");
 }
+
 void WiFiWorker::startArray() {
   // Serial.println("arr start");
-}
-void WiFiWorker::startObject() {
-  // Serial.println("obj start");
 }
 
 WeatherState WiFiWorker::getCurrentState() {
