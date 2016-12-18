@@ -28,6 +28,8 @@ CRGBPalette16 gCurrentPalette;
 CRGBPalette16 gTargetPalette;
 int currentBrightness = 200;
 
+unsigned long timeToSwitch;
+
 void handleNotFound(){
   String message = "File Not Found\n\n";
   message += "URI: ";
@@ -74,20 +76,16 @@ void setup(void){
     server.send(200, "text/html", handleRoot());
   });
 
-  server.on("/mode_prev", []() {
-    prevMode();
-    server.sendHeader("Connection", "close");
-    server.send(200, "text/html", handleRoot());
-  });
-
   server.on("/bright_more", []() {
     moreBright();
+    Serial.println("Brightness: " + String(currentBrightness));
     server.sendHeader("Connection", "close");
     server.send(200, "text/html", handleRoot());
   });
 
   server.on("/bright_less", []() {
     lessBright();
+    Serial.println("Brightness: " + String(currentBrightness));
     server.sendHeader("Connection", "close");
     server.send(200, "text/html", handleRoot());
   });
@@ -101,10 +99,16 @@ void setup(void){
     .setCorrection(TypicalLEDStrip);
 
   chooseNextColorPalette(gTargetPalette);
+  timeToSwitch = millis() + SECONDS_PER_PALETTE * 1000;
 }
 
 void loop(void){
-  EVERY_N_SECONDS( SECONDS_PER_PALETTE ) {
+  // EVERY_N_SECONDS( SECONDS_PER_PALETTE ) {
+  //   chooseNextColorPalette( gTargetPalette );
+  // }
+  if (millis() > timeToSwitch) {
+    Serial.println("Time to switch!");
+    timeToSwitch = millis() + SECONDS_PER_PALETTE * 1000;
     chooseNextColorPalette( gTargetPalette );
   }
 
@@ -120,11 +124,7 @@ void loop(void){
 }
 
 void nextMode() {
-
-}
-
-void prevMode() {
-
+  timeToSwitch = millis();
 }
 
 inline int min(int x, int y) {
@@ -145,14 +145,13 @@ void lessBright() {
   FastLED.setBrightness(currentBrightness);
 }
 
-const char * handleRoot() {
-  const char * res = "<html lang='en'><head>\
+String handleRoot() {
+  String res = "<html lang='en'><head>\
   	<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'/>\
   	<title>Garaland interface</title>\
   	<style>	.c{text-align: center;}	div,input{padding:5px;font-size:1em;}	body{text-align: center;font-family:verdana;}	button{border:0;border-radius:0.3rem;background-color:#1fa3ec;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}	.q{float: right;width: 64px;text-align: right;}	</style>\
     </head><body>	<div style='text-align:left;display:inline-block;min-width:260px;'><br/>\
       <h3>Garaland interface v. 0.1</h3>\
-      <form action='/mode_prev' method='post'><button>Prev mode</button></form>\
       <form action='/mode_next' method='post'><button>Next mode</button></form><br><br>\
       <form action='/bright_more' method='post'><button>Brightness +</button></form>\
       <form action='/bright_less' method='post'><button>Brightness -</button></form><br><br>\
