@@ -8,7 +8,7 @@
 #define FASTLED_ESP8266_NODEMCU_PIN_ORDER
 #include "FastLED.h"
 
-#define NUM_LEDS      3
+#define NUM_LEDS      149
 #define LED_TYPE      WS2812
 #define COLOR_ORDER   GRB
 #define DATA_PIN      4
@@ -23,12 +23,71 @@ CRGB leds[NUM_LEDS];
 #define TWINKLE_SPEED 3
 #define TWINKLE_DENSITY 5
 CRGB gBackgroundColor = CRGB::Black; //CRGB(0,0,6);
-#define SECONDS_PER_PALETTE  45
+#define SECONDS_PER_PALETTE  60
 CRGBPalette16 gCurrentPalette;
 CRGBPalette16 gTargetPalette;
 int currentBrightness = 200;
+bool repeatMode = true;
 
 unsigned long timeToSwitch;
+
+typedef void (*TwoArgumentPattern)(uint8_t arg1, uint8_t arg2);
+typedef struct {
+  TwoArgumentPattern mPattern;
+  uint8_t mArg1;
+  uint8_t mArg2;
+} TwoArgumentPatterWithArgumentValues;
+
+void juggle_2(uint8_t arg1, uint8_t arg2);
+void bpm_2(uint8_t arg1, uint8_t arg2);
+void sinelon_2(uint8_t arg1, uint8_t arg2);
+void confetti_2(uint8_t arg1, uint8_t arg2);
+void rainbowWithGlitter_2(uint8_t arg1, uint8_t arg2);
+
+TwoArgumentPatterWithArgumentValues gPatternsAndArguments[] = {
+  {rainbowWithGlitter_2,  5 /*stripeDensity*/,  0 /*chanceOfGlitter*/},
+  {rainbowWithGlitter_2, 10 /*stripeDensity*/, 80 /*chanceOfGlitter*/},
+
+  {sinelon_2, 13 /*BPM*/, 10 /*fadeAmount*/ },
+  {sinelon_2,  7 /*BPM*/, 1 /*fadeAmount*/ },
+
+  {bpm_2,     62 /*BPM*/, 3 /*stripeWidth*/},
+  {bpm_2,    125 /*BPM*/, 7 /*stripeWidth*/},
+  {bpm_2,     15 /*BPM*/, 1 /*stripeWidth*/},
+
+  {confetti_2, 96 /*colorVariation*/, 30/*fadeAmount*/},
+  {confetti_2, 16 /*colorVariation*/,  3/*fadeAmount*/},
+
+  {juggle_2,  3 /*numDots*/,  7 /*baseBpmSpeed*/},
+  {juggle_2,  8 /*numDots*/, 13 /*baseBpmSpeed*/}
+};
+
+String modeNames[] = {
+  "RainbowStripe",
+  "RedGreenWhite",
+  "RainbowStripe",
+  "BlueWhite",
+  "RainbowStripe",
+  "PartyColors",
+  "Rainbow",
+  "Rainbow + Glitter",
+  "Sinelon 1",
+  "Sinelon 2",
+  "BPM 1",
+  "BPM 2",
+  "BPM 3",
+  "Confetti 1",
+  "Confetti 2",
+  "Juggle 1",
+  "Juggle 2",
+};
+
+const int numOfModes = 17; // общее кол-во режимов, 6 + 11
+String currentModeName = "RainbowStripe";
+int currentMode = -1;
+uint8_t currentPalette = -1;
+uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
+uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 
 void handleNotFound(){
   String message = "File Not Found\n\n";
@@ -47,6 +106,9 @@ void handleNotFound(){
 
 void setup(void){
   Serial.begin(115200);
+
+  WiFi.mode(WIFI_AP);
+
   WiFi.begin(ssid, password);
   Serial.println("");
 
@@ -61,7 +123,7 @@ void setup(void){
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  if (MDNS.begin("xmas.tree")) {
+  if (MDNS.begin("esp")) {
     Serial.println("MDNS responder started");
   }
 
@@ -90,6 +152,8 @@ void setup(void){
     server.send(200, "text/html", handleRoot());
   });
 
+  server.on("/mode_repeat", switchRepeatMode);
+
   server.onNotFound(handleNotFound);
 
   server.begin();
@@ -102,29 +166,51 @@ void setup(void){
   timeToSwitch = millis() + SECONDS_PER_PALETTE * 1000;
 }
 
+bool isReelMode () {
+  return currentMode > 5; // первые 5 режимов - из twinkle, дальше - из demoreel
+}
+
 void loop(void){
-  // EVERY_N_SECONDS( SECONDS_PER_PALETTE ) {
-  //   chooseNextColorPalette( gTargetPalette );
-  // }
-  if (millis() > timeToSwitch) {
+  if (repeatMode && millis() > timeToSwitch) {
     Serial.println("Time to switch!");
     timeToSwitch = millis() + SECONDS_PER_PALETTE * 1000;
-    chooseNextColorPalette( gTargetPalette );
+    if (isReelMode()) {
+      nextPattern();
+    } else {
+      chooseNextColorPalette( gTargetPalette );
+    }
+    currentModeName = modeNames[currentMode];
   }
 
-  EVERY_N_MILLISECONDS( 10 ) {
-    nblendPaletteTowardPalette( gCurrentPalette, gTargetPalette, 12);
+  if (isReelMode()) {
+    gHue++; // slowly cycle the "base color" through the rainbow
+
+    // Call the current pattern function once, updating the 'leds' array
+    uint8_t arg1 = gPatternsAndArguments[ gCurrentPatternNumber ].mArg1;
+    uint8_t arg2 = gPatternsAndArguments[ gCurrentPatternNumber ].mArg2;
+    TwoArgumentPattern pat = gPatternsAndArguments[ gCurrentPatternNumber ].mPattern;
+
+    pat(arg1, arg2);
+
+    // send the 'leds' array out to the actual LED strip
+    FastLED.show();
+    // insert a delay to keep the framerate modest
+    FastLED.delay(1000/120); // about sixty FPS
+  } else {
+    EVERY_N_MILLISECONDS( 10 ) {
+      nblendPaletteTowardPalette( gCurrentPalette, gTargetPalette, 12);
+    }
+    drawTwinkles( leds, NUM_LEDS);
+    FastLED.show();
   }
-
-  drawTwinkles( leds, NUM_LEDS);
-
-  FastLED.show();
-
   server.handleClient();
 }
 
 void nextMode() {
+  int x = (currentMode + 1) % numOfModes;
+  currentModeName = modeNames[x];
   timeToSwitch = millis();
+  repeatMode = true;
 }
 
 inline int min(int x, int y) {
@@ -145,16 +231,30 @@ void lessBright() {
   FastLED.setBrightness(currentBrightness);
 }
 
+void switchRepeatMode() {
+  repeatMode = !repeatMode;
+  String state = repeatMode ? "on" : "off";
+  Serial.println("Repeat mode: " + state);
+  server.sendHeader("Connection", "close");
+  server.send(200, "text/html", handleRoot());
+}
+
 String handleRoot() {
   String res = "<html lang='en'><head>\
   	<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'/>\
   	<title>Garaland interface</title>\
   	<style>	.c{text-align: center;}	div,input{padding:5px;font-size:1em;}	body{text-align: center;font-family:verdana;}	button{border:0;border-radius:0.3rem;background-color:#1fa3ec;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}	.q{float: right;width: 64px;text-align: right;}	</style>\
     </head><body>	<div style='text-align:left;display:inline-block;min-width:260px;'><br/>\
-      <h3>Garaland interface v. 0.1</h3>\
-      <form action='/mode_next' method='post'><button>Next mode</button></form><br><br>\
+      <h3>Garaland interface v. 0.3</h3>\
+      <h4>Mode: " + currentModeName + " </h4>\
+      <h4>Repeat mode: " + String(repeatMode ? "on" : "off") + "</h4>\
+      <h4>Brightness: " + String(currentBrightness) + "</h4>\
+      <h4>Local IP: " + WiFi.localIP().toString() + "</h4>\
+      <form action='/mode_next' method='post'><button>Next mode</button></form>\
+      <form action='/mode_repeat' method='post'><button>Repeat mode</button></form><br><br>\
       <form action='/bright_more' method='post'><button>Brightness +</button></form>\
       <form action='/bright_less' method='post'><button>Brightness -</button></form><br><br>\
+      <form action='?m=test' method='post'><button>test</button></form><br><br>\
   	</body></html>";
     return res;
 }
@@ -248,16 +348,67 @@ const TProgmemRGBPalette16* ActivePaletteList[] = {
   &BlueWhite_p,
   &RainbowStripeColors_p,
   &PartyColors_p,
-  &RainbowStripeColors_p,
 };
 
-
-// Advance to the next color palette in the list (above).
-void chooseNextColorPalette( CRGBPalette16& pal)
-{
+void chooseNextColorPalette( CRGBPalette16& pal) {
   const uint8_t numberOfPalettes = sizeof(ActivePaletteList) / sizeof(ActivePaletteList[0]);
-  static uint8_t whichPalette = -1;
-  whichPalette = addmod8( whichPalette, 1, numberOfPalettes);
 
-  pal = *(ActivePaletteList[whichPalette]);
+  currentPalette = addmod8(currentPalette, 1, numberOfPalettes);
+  pal = *(ActivePaletteList[currentPalette]);
+
+  currentMode = (currentMode + 1) % numOfModes;
+  Serial.println("mode is " + String (currentMode));
+}
+
+void nextPattern() {
+  // add one to the current pattern number, and wrap around at the end
+  const int numberOfPatterns = sizeof(gPatternsAndArguments) / sizeof( gPatternsAndArguments[0]);
+  gCurrentPatternNumber = (gCurrentPatternNumber+1) % numberOfPatterns;
+  currentMode = (currentMode + 1) % numOfModes;
+}
+
+void rainbowWithGlitter_2( uint8_t stripeDensity, uint8_t chanceOfGlitter) {
+  // built-in FastLED rainbow, plus some random sparkly glitter
+  fill_rainbow( leds, NUM_LEDS, gHue, stripeDensity);
+  addGlitter(chanceOfGlitter);
+}
+
+void addGlitter( fract8 chanceOfGlitter) {
+  if( random8() < chanceOfGlitter) {
+    leds[ random16(NUM_LEDS) ] += CRGB::White;
+  }
+}
+
+void confetti_2( uint8_t colorVariation, uint8_t fadeAmount) {
+  // random colored speckles that blink in and fade smoothly
+  fadeToBlackBy( leds, NUM_LEDS, fadeAmount);
+  int pos = random16(NUM_LEDS);
+  leds[pos] += CHSV( gHue + random8(colorVariation), 200, 255);
+}
+
+void sinelon_2( uint8_t bpmSpeed, uint8_t fadeAmount) {
+  // a colored dot sweeping back and forth, with fading trails
+  fadeToBlackBy( leds, NUM_LEDS, fadeAmount);
+  int pos = beatsin16(bpmSpeed, 0, NUM_LEDS);
+  leds[pos] += CHSV( gHue, 255, 192);
+}
+
+void bpm_2( uint8_t bpmSpeed, uint8_t stripeWidth) {
+  // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
+  uint8_t BeatsPerMinute = bpmSpeed;
+  CRGBPalette16 palette = PartyColors_p;
+  uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
+  for( int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = ColorFromPalette(palette, gHue+(i*stripeWidth), beat);
+  }
+}
+
+void juggle_2( uint8_t numDots, uint8_t baseBpmSpeed) {
+  // eight colored dots, weaving in and out of sync with each other
+  fadeToBlackBy( leds, NUM_LEDS, 100);
+  byte dothue = 0;
+  for( int i = 0; i < numDots; i++) {
+    leds[beatsin16(i+baseBpmSpeed,0,NUM_LEDS)] |= CHSV(dothue, 255, 224);
+    dothue += (256 / numDots);
+  }
 }
