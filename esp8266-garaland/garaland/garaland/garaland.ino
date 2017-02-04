@@ -48,18 +48,18 @@ TwoArgumentPatterWithArgumentValues gPatternsAndArguments[] = {
   {rainbowWithGlitter_2,  5 /*stripeDensity*/,  0 /*chanceOfGlitter*/},
   {rainbowWithGlitter_2, 10 /*stripeDensity*/, 80 /*chanceOfGlitter*/},
 
-  {sinelon_2, 13 /*BPM*/, 10 /*fadeAmount*/ },
-  {sinelon_2,  7 /*BPM*/, 1 /*fadeAmount*/ },
+  {sinelon_2, 6 /*BPM*/, 10 /*fadeAmount*/ },
+  {sinelon_2,  3 /*BPM*/, 1 /*fadeAmount*/ },
 
-  {bpm_2,     62 /*BPM*/, 3 /*stripeWidth*/},
-  {bpm_2,    125 /*BPM*/, 7 /*stripeWidth*/},
+  {bpm_2,     5 /*BPM*/, 3 /*stripeWidth*/},
+  {bpm_2,    10 /*BPM*/, 7 /*stripeWidth*/},
   {bpm_2,     15 /*BPM*/, 1 /*stripeWidth*/},
 
   {confetti_2, 96 /*colorVariation*/, 30/*fadeAmount*/},
   {confetti_2, 16 /*colorVariation*/,  3/*fadeAmount*/},
 
-  {juggle_2,  3 /*numDots*/,  7 /*baseBpmSpeed*/},
-  {juggle_2,  8 /*numDots*/, 13 /*baseBpmSpeed*/}
+  {juggle_2,  30 /*numDots*/,  3 /*baseBpmSpeed*/},
+  {juggle_2,  80 /*numDots*/, 6 /*baseBpmSpeed*/}
 };
 
 String modeNames[] = {
@@ -123,7 +123,7 @@ void setup(void){
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  if (MDNS.begin("esp")) {
+  if (MDNS.begin("xmas.tree")) {
     Serial.println("MDNS responder started");
   }
 
@@ -241,7 +241,7 @@ void switchRepeatMode() {
 
 String handleRoot() {
   String res = "<html lang='en'><head>\
-  	<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'/>\
+  	<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no, refresh='0;/'/>\
   	<title>Garaland interface</title>\
   	<style>	.c{text-align: center;}	div,input{padding:5px;font-size:1em;}	body{text-align: center;font-family:verdana;}	button{border:0;border-radius:0.3rem;background-color:#1fa3ec;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}	.q{float: right;width: 64px;text-align: right;}	</style>\
     </head><body>	<div style='text-align:left;display:inline-block;min-width:260px;'><br/>\
@@ -254,7 +254,6 @@ String handleRoot() {
       <form action='/mode_repeat' method='post'><button>Repeat mode</button></form><br><br>\
       <form action='/bright_more' method='post'><button>Brightness +</button></form>\
       <form action='/bright_less' method='post'><button>Brightness -</button></form><br><br>\
-      <form action='?m=test' method='post'><button>test</button></form><br><br>\
   	</body></html>";
     return res;
 }
